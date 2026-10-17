@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#08131d">
+  <title>数字媒体互动原型</title>
+  <style>
+    :root{--ink:#08131d;--panel:#102330;--panel2:#142d3b;--line:rgba(215,237,232,.14);--text:#edf5f0;--muted:#9bb0b0;--accent:#8ce0c9;--gold:#f2cf86;--bad:#ff9b7b;--good:#9fe1b2}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% 5%,#153449 0,transparent 30%),var(--ink);color:var(--text);font-family:Inter,"Segoe UI","Microsoft YaHei",sans-serif;line-height:1.55}a{color:var(--accent)}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+    .topbar{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:13px clamp(16px,4vw,48px);border-bottom:1px solid var(--line);background:#08131de8;backdrop-filter:blur(14px);font-size:12px}.brand{color:var(--text);text-decoration:none;letter-spacing:.13em;font-weight:700}.back{color:var(--muted);text-decoration:none}.back:hover{color:var(--accent)}.wrap{max-width:1100px;margin:auto;padding:30px clamp(16px,4vw,34px) 54px}.phead{display:flex;justify-content:space-between;gap:24px;align-items:end;margin:15px 0 27px}.eyebrow{color:var(--accent);font:11px ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase}.phead h1{font:clamp(34px,5vw,56px)/1.08 Georgia,"Microsoft YaHei",serif;letter-spacing:-.035em;margin:12px 0}.phead p{max-width:670px;color:#b8c9c5;margin:0;font-size:14px}.indexmark{text-align:right;color:var(--muted);font:12px ui-monospace,monospace;min-width:100px}.indexmark b{display:block;color:var(--accent);font-size:30px;font-weight:400}
+    .layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(250px,.75fr);gap:15px;align-items:start}.panel{background:linear-gradient(145deg,#112936,#0d1c27);border:1px solid var(--line);border-radius:18px;padding:20px}.panel h2,.panel h3{margin:0 0 9px}.panel h2{font-size:18px}.panel h3{font-size:15px}.small{font-size:12px;color:var(--muted)}.kicker{font:10px ui-monospace,monospace;letter-spacing:.15em;color:var(--accent);text-transform:uppercase}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.spread{display:flex;justify-content:space-between;gap:12px;align-items:center}.btn{border:1px solid #577373;background:#162f3b;color:var(--text);padding:10px 13px;border-radius:11px;font-size:12px;transition:.18s}.btn:hover{border-color:var(--accent);background:#1b4146}.btn.primary{background:var(--accent);border-color:var(--accent);color:#0b2424;font-weight:700}.btn.ghost{background:transparent}.btn.smallbtn{padding:7px 10px}.btn:disabled{opacity:.42;cursor:not-allowed}.pill{font-size:10px;padding:5px 9px;border-radius:999px;background:#ffffff0c;border:1px solid var(--line);color:#bfd0ca}.rule{height:1px;background:var(--line);margin:16px 0}.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:13px}.metric{padding:12px;border-radius:12px;background:#091923;border:1px solid var(--line)}.metric label{display:block;color:var(--muted);font-size:10px}.metric strong{font:22px Georgia,serif;color:var(--accent)}.meter{height:4px;background:#ffffff12;border-radius:5px;margin-top:8px;overflow:hidden}.meter i{height:100%;display:block;background:var(--accent);border-radius:5px;transition:width .3s}.scene{position:relative;min-height:245px;overflow:hidden;border-radius:15px;background:linear-gradient(165deg,#244b5a 0,#0f2939 53%,#081825 100%);border:1px solid #9ad8cc28;padding:18px;display:flex;flex-direction:column;justify-content:space-between}.scene:before{content:"";position:absolute;inset:0;background:linear-gradient(130deg,transparent 35%,#ffffff09 36% 37%,transparent 38%),radial-gradient(ellipse at 25% 100%,#7ac8b22a,transparent 54%);pointer-events:none}.scene>*{position:relative}.scene-tag{font:10px ui-monospace,monospace;letter-spacing:.15em;color:#b7dcd3}.scene-title{font:28px Georgia,serif;max-width:420px}.choice-grid{display:grid;gap:9px;margin-top:14px}.choice{display:flex;justify-content:space-between;align-items:center;gap:16px;text-align:left}.choice span:first-child{font-weight:600}.choice small{display:block;color:var(--muted);font-weight:400;margin-top:3px}.choice b{font:15px ui-monospace,monospace;color:var(--accent)}.callout{padding:13px 14px;background:#e6c78312;border:1px solid #e6c78336;border-radius:12px;color:#decfa7;font-size:12px;margin-top:13px}.success{color:var(--good)}.warning{color:var(--bad)}.linkbtn{color:var(--accent);text-decoration:none;font-size:12px}.list{display:grid;gap:10px}.log{border-left:1px solid #47756c;padding:3px 0 3px 12px;color:#c1d2cd;font-size:12px}.log time{display:block;color:var(--muted);font:10px ui-monospace,monospace;margin-bottom:4px}
+    .ice-scene{background:linear-gradient(155deg,#b6dece 0,#5f9d9c 21%,#193b54 55%,#071526 100%)}.ice-scene:after{content:"";position:absolute;right:9%;bottom:-29px;width:190px;height:180px;background:linear-gradient(160deg,#eff8e8 0,#b4d9cd 18%,#52849a 72%);clip-path:polygon(42% 0,68% 17%,61% 31%,100% 60%,87% 100%,0 100%,20% 68%,8% 47%);opacity:.9}.ice-scene .scene-title{z-index:2}.ice-scene .scene-tag{z-index:2}
+    .clue-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.clue{min-height:112px;text-align:left;padding:14px;border:1px solid var(--line);border-radius:13px;background:#0c1c27;color:var(--text)}.clue.selected{border-color:var(--accent);background:#1a4242}.clue b{display:block;font-size:13px;margin-bottom:5px}.clue span{font-size:11px;color:var(--muted)}.signal{display:flex;align-items:center;gap:6px;height:46px;margin:8px 0}.signal i{display:block;width:9px;background:var(--accent);border-radius:3px;animation:pulse 1s infinite alternate}.signal i:nth-child(3n){height:36px}.signal i:nth-child(3n+1){height:17px;animation-delay:.2s}.signal i:nth-child(3n+2){height:26px;animation-delay:.4s}@keyframes pulse{to{opacity:.35;transform:scaleY(.5)}}
+    .room{position:relative;height:270px;border-radius:15px;background:linear-gradient(145deg,#15334a,#0c1c2a);border:1px solid var(--line);overflow:hidden}.room:before{content:"";position:absolute;inset:14px;border:1px solid #7ed5cb42;border-radius:12px;background:linear-gradient(90deg,transparent 49.8%,#7ed5cb1b 50%,transparent 50.2%),linear-gradient(transparent 49.8%,#7ed5cb1b 50%,transparent 50.2%);background-size:72px 72px}.room.hc{background:#000;border:2px solid #fff}.room.hc:before{border-color:#fff;background:linear-gradient(90deg,transparent 49.8%,#fff 50%,transparent 50.2%),linear-gradient(transparent 49.8%,#fff 50%,transparent 50.2%);background-size:72px 72px}.room.large{font-size:18px}.room-label{position:absolute;color:#a6bdb9;font:10px ui-monospace,monospace}.rover{position:absolute;width:32px;height:32px;border:3px solid #07131d;border-radius:50%;background:var(--accent);box-shadow:0 0 22px var(--accent);transform:translate(-50%,-50%);transition:left .25s,top .25s}.station{position:absolute;padding:5px 8px;border-radius:8px;background:#d6c17a;color:#182327;font-size:9px}.dpad{display:grid;grid-template-columns:repeat(3,40px);grid-template-rows:repeat(2,38px);gap:4px}.dpad button{padding:4px}.dpad .up{grid-column:2}.dpad .left{grid-column:1;grid-row:2}.dpad .down{grid-column:2;grid-row:2}.dpad .right{grid-column:3;grid-row:2}.state-line{font-size:12px;color:var(--muted)}.controlset{display:flex;gap:7px;flex-wrap:wrap}
+    .archive-art{width:100%;height:auto;display:block;border-radius:13px;border:1px solid var(--line);background:#172b35}.story-card{padding:14px;border-radius:13px;background:#091923;border:1px solid var(--line);color:#d5e2db;font:15px/1.6 Georgia,"Microsoft YaHei",serif}.story-card em{display:block;color:var(--muted);font:10px ui-monospace,monospace;letter-spacing:.1em;margin-bottom:8px}.stage{display:flex;gap:7px;flex-wrap:wrap;margin:13px 0}.stage .active{color:var(--accent);border-color:var(--accent);background:#133735}
+    .chatlog{height:252px;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:12px;background:#091923;border-radius:13px;border:1px solid var(--line)}.bubble{max-width:92%;padding:11px 13px;border-radius:13px;font-size:12px}.bubble.assistant{background:#162f3c;align-self:flex-start}.bubble.user{background:#22504d;align-self:flex-end}.bubble a{font-size:10px}.askrow{display:flex;gap:8px;margin-top:9px}.askrow input{flex:1;min-width:0}.field{border:1px solid var(--line);background:#0b1b26;color:var(--text);padding:10px 12px;border-radius:10px;font-size:12px}.preset{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}.quiz-answer{padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:#0a1923;color:var(--text);font-size:11px}
+    .rolecard{display:flex;align-items:center;gap:13px;padding:14px;border:1px solid var(--line);border-radius:13px;background:#091923}.avatar{width:50px;height:66px;border-radius:15px;background:linear-gradient(160deg,#9cceb8 0 20%,#294964 21% 78%,#e6b971 79%);position:relative}.avatar:before{content:"";position:absolute;width:29px;height:29px;border-radius:50%;background:#efc8a0;left:10px;top:8px}.avatar:after{content:"";position:absolute;width:11px;height:11px;border-radius:50%;border:2px solid #f6e5bd;left:19px;top:39px}.shotrow{display:grid;grid-template-columns:minmax(100px,1fr) 1fr 1fr auto;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.shotrow:last-child{border:0}.shotrow label{font-size:11px;color:var(--muted)}.shotrow select{width:100%;min-width:0}.shotstatus{font-size:10px;color:var(--good)}.shotstatus.flag{color:var(--bad)}.thumbs{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}.thumb{width:83px;height:72px;object-fit:cover;border-radius:9px;border:1px solid var(--line)}.footer{border-top:1px solid var(--line);padding-top:17px;margin-top:24px;color:#839b9a;font-size:10px;display:flex;justify-content:space-between;gap:10px}
+    @media(max-width:760px){.layout{grid-template-columns:1fr}.phead{align-items:start}.indexmark{min-width:50px}.indexmark b{font-size:23px}.room{height:240px}}@media(max-width:530px){.wrap{padding-top:20px}.phead{flex-direction:column}.indexmark{display:flex;gap:8px;align-items:center}.indexmark b{font-size:18px}.metric-grid{grid-template-columns:1fr}.metric{display:grid;grid-template-columns:1fr auto;align-items:center}.meter{grid-column:1/-1}.panel{padding:15px}.clue-grid{grid-template-columns:1fr}.shotrow{grid-template-columns:1fr 1fr}.shotrow>strong{grid-column:1/-1}.scene{min-height:220px}.footer{flex-direction:column}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="index.html">FUTURE FIELDNOTES / 2026</a><a class="back" href="index.html">返回珊瑚原型首页</a></header>
+  <main id="app" class="wrap" aria-live="polite"></main>
+  <script>
+    const $ = (s,root=document) => root.querySelector(s);
+    const $$ = (s,root=document) => Array.from(root.querySelectorAll(s));
+    const app = $('#app');
+    const world = 'archive';
+    const meta = {
+      ice:{n:'02',track:'科幻主题沉浸式文旅与教育',title:'冰芯来信：南极科研站 72 小时',intro:'暴风雪切断补给后，你需要在 72 小时内保护冰芯样本、恢复通信，并为科研站做出取舍。每个选择都改变资源状态与结局。',accent:'#a8e9df',label:'ICE CORE / 72 HOURS'},
+      moon:{n:'03',track:'跨媒体科幻叙事',title:'月背电台：失联者日志',intro:'月背科研站失联。你收到残缺电台讯号，必须把记录时间、继电器日志和一段重复音调拼成一条可信时间线。',accent:'#e4c58e',label:'FAR SIDE / LAST SIGNAL'},
+      sync:{n:'04',track:'元宇宙技术创新与科幻应用',title:'同频舱：无障碍元宇宙交互系统',intro:'同一座未来研究站，支持键盘、方向按钮和预设语音指令。试着用适合自己的方式完成导航，并调整字号、对比度与动效。',accent:'#83dfd0',label:'SYNC DECK / ACCESS FOR ALL'},
+      archive:{n:'05',track:'人工智能生成艺术与数字内容创作',title:'声纹织村：口述史共创视觉档案',intro:'从故事底稿选择主题与风格，生成一张程序化视觉草图，再由创作者进行人工修订。示例文案为虚构占位，不代表真实采访。',accent:'#f2be82',label:'VOICE THREAD / CO-CREATE'},
+      star:{n:'06',track:'AIGC 智能助手与交互体验设计',title:'星问：带证据链的天文导览伙伴',intro:'选择一个观星问题，让导览助手给出解释和来源。当前页面使用离线示例问答演示交互与证据链，不连接在线 AI 服务。',accent:'#b2c6ff',label:'STELLAR GUIDE / SHOW THE SOURCE'},
+      mirror:{n:'07',track:'AIGC 工具、模型应用及可用性评估',title:'镜间：AIGC 短片角色一致性助手',intro:'设定角色卡后，逐镜填写服装颜色与标志物。工具按标签提示差异，由创作者复核并导出记录；不会自动识别画面内容。',accent:'#8fc9f5',label:'FRAME CHECK / HUMAN REVIEW'}
+    };
+    const info = meta[world] || meta.ice;
+    document.documentElement.style.setProperty('--accent',info.accent);
+    const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    function header(side){
+      document.title = info.title + '｜互动原型';
+      return '<section class="phead"><div><div class="eyebrow">'+info.track+'</div><h1>'+info.title+'</h1><p>'+info.intro+'</p></div><div class="indexmark"><b>'+info.n+'</b>'+info.label+'</div></section>';
+    }
+    function footer(note){
+      return '<div class="footer"><span>INTERACTIVE PROTOTYPE · '+info.n+'/07</span><span>'+note+'</span></div>';
+    }
+    function setPage(main,side,note){
+      app.innerHTML = header()+'<div class="layout"><section>'+main+'</section><aside class="list">'+side+'</aside></div>'+footer(note);
+    }
+    function metric(label,value){
+      return '<div class="metric"><label>'+label+'</label><strong>'+Math.round(value)+'</strong><div class="meter"><i style="width:'+Math.max(0,Math.min(100,value))+'%"></i></div></div>';
+    }
+
+    // 02 · Ice station: three decisions alter a clearly fictional scenario.
+    const ice = {step:0,power:68,safety:58,science:42,log:[]};
+    const iceSteps = [
+      {title:'第一夜 · 暴风雪抵达',text:'外部风速持续升高，实验室温控和中继天线同时报警。你先处理哪一项？',choices:[
+        {name:'为样本舱供暖',detail:'保护冰芯，耗用备用电量。',d:{power:-22,safety:10,science:12}},
+        {name:'重启中继天线',detail:'尝试联系补给船，暂缓实验室供电。',d:{power:-14,safety:-4,science:5}},
+        {name:'加固外部保温层',detail:'降低后续热损失，但无法立即恢复通信。',d:{power:-18,safety:13,science:0}}
+      ]},
+      {title:'第二天 · 数据出现异常',text:'冰芯分析仪读数跳变。你只有一组备用耗材，是否立即复测？',choices:[
+        {name:'立即复测关键层位',detail:'消耗耗材，增加数据可信度。',d:{power:-12,safety:0,science:22}},
+        {name:'先检查仪器校准',detail:'保留耗材，延缓结论。',d:{power:-6,safety:2,science:12}},
+        {name:'用历史基线补齐',detail:'节省资源，但把不确定性留给报告。',d:{power:2,safety:0,science:3}}
+      ]},
+      {title:'第三天 · 最后的通信窗口',text:'风速短暂下降，天线只能保持稳定十分钟。你准备发送什么？',choices:[
+        {name:'发送求援坐标与人员状态',detail:'优先确保团队安全。',d:{power:-10,safety:20,science:0}},
+        {name:'发送样本与数据清单',detail:'争取科研信息安全传回。',d:{power:-8,safety:5,science:13}},
+        {name:'两组信息压缩后同时发送',detail:'高风险操作，可能造成丢包。',d:{power:-18,safety:9,science:9}}
+      ]}
+    ];
+    function renderIce(){
+      const s = iceSteps[ice.step];
+      if(!s){renderIceEnd();return}
+      let choices = s.choices.map((c,i)=>'<button class="btn choice" data-ice="'+i+'"><span>'+c.name+'<small>'+c.detail+'</small></span><b>＋</b></button>').join('');
+      const main = '<div class="panel"><div class="metric-grid">'+metric('备用电量',ice.power)+metric('人员安全',ice.safety)+metric('数据完整度',ice.science)+'</div><div class="scene ice-scene"><span class="scene-tag">ANTARCTIC STATION · '+(ice.step+1)+'/3</span><div><div class="scene-title">'+s.title+'</div><div class="small">'+s.text+'</div></div></div><div class="choice-grid">'+choices+'</div></div>';
+      const side = '<div class="panel"><div class="kicker">Mission log</div><h2>站点记录</h2><div class="list">'+(ice.log.length?ice.log.map((x,i)=>'<div class="log"><time>DECISION 0'+(i+1)+'</time>'+x+'</div>').join(''):'<div class="small">等待你的第一项决策。选择会改变演示用的资源指标。</div>')+'</div><div class="callout">情景、资源数值与后果均为互动叙事模拟，不是南极站运营建议。</div></div>';
+      setPage(main,side,'科幻剧情与资源状态为演示模拟');
+      $$('[data-ice]').forEach(b=>b.onclick=()=>{const c=s.choices[Number(b.dataset.ice)];ice.power=Math.max(0,Math.min(100,ice.power+c.d.power));ice.safety=Math.max(0,Math.min(100,ice.safety+c.d.safety));ice.science=Math.max(0,Math.min(100,ice.science+c.d.science));ice.log.push(c.name);ice.step++;renderIce()});
+    }
+    function renderIceEnd(){
+      const total=ice.safety+ice.science+ice.power;
+      const ending=total>185?'协同守望：人员安全与关键数据都得到保留。':total>135?'带着缺口返回：团队安全，但部分样本或通信数据需要后续复核。':'优先撤离：团队平安离站，科研数据留待下一次任务。';
+      const main='<div class="panel"><div class="kicker">72 hours later</div><h2>'+ending+'</h2><p class="small">你做出的选择：'+ice.log.join(' → ')+'</p><div class="metric-grid">'+metric('剩余电量',ice.power)+metric('人员安全',ice.safety)+metric('数据完整度',ice.science)+'</div><div class="callout">结局按本页面的虚构规则生成，用于展示“选择—反馈”闭环。真实科研与安全决策必须依据专业规范和现场数据。</div><button class="btn primary" data-ice-reset>重新执行任务</button></div>';
+      const side='<div class="panel"><div class="kicker">Debrief</div><h2>复盘提示</h2><div class="list"><div class="log">哪些选择保护了团队，哪些选择保护了样本？</div><div class="log">科学任务中的不确定性如何向公众表达？</div><div class="log">演示时可记录不同路线的选择分布与理解度。</div></div></div>';
+      setPage(main,side,'剧情为原创虚构设定；数值只用于交互演示');
+      $('[data-ice-reset]').onclick=()=>{ice.step=0;ice.power=68;ice.safety=58;ice.science=42;ice.log=[];renderIce()};
+    }
+
+    // 03 · Transmedia mystery: choose evidence, then rebuild the signal.
+    const moon = {picked:new Set(),done:false};
+    const clues = [
+      {id:'clock',name:'任务日志 / 22:14',text:'失联前最后一条人工记录时间为 22:14。'},
+      {id:'relay',name:'电力台账 / 继电器 B',text:'22:12 时，B 继电器被手动切换到备用阵列。'},
+      {id:'tone',name:'电台波形 / 三短一长',text:'讯号尾部反复出现三短一长的节奏。'},
+      {id:'diary',name:'值班员便笺 / “别关掉…”',text:'便笺只留下半句，无法单独确认对象。'}
+    ];
+    function playSignal(){
+      const Ctx=window.AudioContext||window.webkitAudioContext;
+      if(!Ctx){$('#audioStatus').textContent='当前浏览器不支持合成提示音，波形字幕仍可查看。';return}
+      const ctx=new Ctx(), now=ctx.currentTime, osc=ctx.createOscillator(), gain=ctx.createGain();
+      osc.type='sine';osc.frequency.value=640;gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(.12,now+.03);gain.gain.exponentialRampToValueAtTime(.0001,now+.17);osc.connect(gain);gain.connect(ctx.destination);
+      for(let i=0;i<4;i++){const t=now+i*.24;osc.frequency.setValueAtTime(i===3?880:520,t);gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(.1,t+.02);gain.gain.exponentialRampToValueAtTime(.0001,t+(i===3?.34:.12))}
+      osc.start(now);osc.stop(now+1.2);setTimeout(()=>ctx.close(),1500);$('#audioStatus').textContent='播放的是浏览器合成的示意音，不是历史录音。';
+    }
+    function renderMoon(){
+      const tiles=clues.map(c=>'<button class="clue '+(moon.picked.has(c.id)?'selected':'')+'" data-clue="'+c.id+'"><b>'+c.name+(moon.picked.has(c.id)?' ✓':'')+'</b><span>'+c.text+'</span></button>').join('');
+      const result=moon.done?'<div class="callout"><b>讯号重建完成</b><br>正确时间线：22:12 备用继电器切换 → 22:14 自动电台发出“三短一长” → 值班员尝试提醒地面站保留备用链路。你选择了保留通信链路并启动救援确认流程。<br><span class="small">这是虚构故事的演示结局，线索关系由本原型预设。</span></div>':'';
+      const main='<div class="panel"><div class="spread"><div><div class="kicker">Signal fragments</div><h2>选择至少三条证据，再重建讯号</h2></div><span class="pill">'+moon.picked.size+' / 4 已选</span></div><div class="signal" aria-hidden="true">'+Array.from({length:18},(_,i)=>'<i style="animation-delay:'+(i%5)*.08+'s"></i>').join('')+'</div><div class="clue-grid">'+tiles+'</div><div class="row" style="margin-top:13px"><button class="btn" data-play-signal>▶ 播放示意讯号</button><button class="btn primary" data-rebuild '+(moon.picked.size<3?'disabled':'')+'>重建时间线</button><span class="small" id="audioStatus">音频为合成示意，可使用线索文字继续。</span></div>'+result+'</div>';
+      const side='<div class="panel"><div class="kicker">Timeline / UTC+8</div><h2>月背站点地图</h2><div class="scene" style="min-height:190px;background:radial-gradient(circle at 58% 46%,#e7c58d 0 2%,transparent 2.2%),radial-gradient(circle at 58% 46%,#9d8970 0 21%,transparent 21.5%),linear-gradient(135deg,#15233a,#101622)"><span class="scene-tag">FAR SIDE ARRAY · SITE 04</span><div class="small">地球视线被月球遮挡<br>中继阵列 A ── 备用阵列 B<br>◇ 电台台址 / 环形山边缘</div><span class="pill">地图为叙事示意</span></div><div class="rule"></div><div class="list"><div class="log"><time>22:12</time>电力系统记录继电器切换</div><div class="log"><time>22:14</time>最后一条人工日志</div><div class="log"><time>22:16</time>收到重复无线电脉冲</div></div><div class="callout">跨媒介线索应各自提供不可替代的信息。可在正式作品中替换为团队录制音频与原创地图。</div></div>';
+      setPage(main,side,'日志、音频波形与月背基地均为虚构叙事');
+      $$('[data-clue]').forEach(b=>b.onclick=()=>{const id=b.dataset.clue;moon.picked.has(id)?moon.picked.delete(id):moon.picked.add(id);renderMoon()});
+      $('[data-play-signal]').onclick=playSignal;
+      const rebuild=$('[data-rebuild]');if(rebuild)rebuild.onclick=()=>{if(moon.picked.has('clock')&&moon.picked.has('relay')&&moon.picked.has('tone')){moon.done=true;renderMoon()}else{$('#audioStatus').textContent='证据还不足以唯一重建时间线：优先检查日志、继电器和波形。'}};
+    }
+
+    // 04 · Accessible navigation with real keyboard and visible preference controls.
+    const sync={x:49,y:51,hc:false,large:false,reduce:false,task:0};
+    function move(dx,dy){sync.x=Math.max(12,Math.min(88,sync.x+dx));sync.y=Math.max(17,Math.min(83,sync.y+dy));sync.task=Math.min(3,sync.task+1);renderSync()}
+    function goTo(where){const pts={lab:[76,35],garden:[73,72],hub:[49,51]};sync.x=pts[where][0];sync.y=pts[where][1];sync.task=Math.min(3,sync.task+1);renderSync()}
+    function renderSync(){
+      const main='<div class="panel"><div class="spread"><div><div class="kicker">Navigation deck</div><h2>选择一种适合自己的控制方式</h2></div><span class="pill">已完成 '+sync.task+' / 3 步</span></div><div class="room '+(sync.hc?'hc ':'')+(sync.large?'large':'')+'" id="room"><span class="room-label" style="left:8%;top:8%">研究站 · 平面导览</span><span class="station" style="left:68%;top:24%">实验室</span><span class="station" style="left:63%;top:65%">温室</span><span class="station" style="left:35%;top:48%">中控舱</span><span class="rover" style="left:'+sync.x+'%;top:'+sync.y+'%" aria-label="当前位置"></span></div><div class="spread" style="margin-top:13px"><div class="state-line">当前位置：'+(sync.x>65?(sync.y>55?'温室附近':'实验室附近'):'中控舱附近')+' · 键盘方向键也可移动</div><div class="dpad" aria-label="方向控制"><span></span><button class="btn smallbtn up" data-move="0,-10" aria-label="向上">↑</button><button class="btn smallbtn left" data-move="-10,0" aria-label="向左">←</button><button class="btn smallbtn down" data-move="0,10" aria-label="向下">↓</button><button class="btn smallbtn right" data-move="10,0" aria-label="向右">→</button></div></div><div class="rule"></div><div class="kicker">预设语音指令 · 点击模拟识别</div><div class="controlset" style="margin-top:8px"><button class="btn smallbtn" data-go="lab">“打开实验室”</button><button class="btn smallbtn" data-go="garden">“前往温室”</button><button class="btn smallbtn" data-go="hub">“回到中控舱”</button></div></div>';
+      const side='<div class="panel"><div class="kicker">Accessibility settings</div><h2>体验偏好</h2><div class="list"><label class="spread small"><span>高对比度地图</span><input type="checkbox" data-pref="hc" '+(sync.hc?'checked':'')+'></label><div class="rule"></div><label class="spread small"><span>放大界面文字</span><input type="checkbox" data-pref="large" '+(sync.large?'checked':'')+'></label><div class="rule"></div><label class="spread small"><span>减少过渡动效</span><input type="checkbox" data-pref="reduce" '+(sync.reduce?'checked':'')+'></label></div><div class="callout">“语音”在此使用预设按钮模拟，不会调用麦克风。键盘方向键、按钮导航和偏好开关均可直接操作。</div><div class="rule"></div><div class="kicker">任务</div><p class="small">找到实验室入口，再前往温室，最后返回中控舱。演示用任务计数不代表用户研究结果。</p></div>';
+      setPage(main,side,'多种输入示例；尚未连接真实语音识别');
+      $$('[data-move]').forEach(b=>b.onclick=()=>{const v=b.dataset.move.split(',').map(Number);move(v[0],v[1])});
+      $$('[data-go]').forEach(b=>b.onclick=()=>goTo(b.dataset.go));
+      $$('[data-pref]').forEach(b=>b.onchange=()=>{sync[b.dataset.pref]=b.checked;renderSync()});
+    }
+    document.addEventListener('keydown',e=>{if(world!=='sync'||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;const m={ArrowUp:[0,-8],ArrowDown:[0,8],ArrowLeft:[-8,0],ArrowRight:[8,0]};if(m[e.key]){e.preventDefault();move(m[e.key][0],m[e.key][1])}});
+
+    // 05 · Creative workflow with fictional source material and a procedural sketch.
+    const archive={story:0,stage:0,palette:'dusk',edited:false};
+    const stories=[
+      {title:'盐风与旧屋',tag:'示范故事 A',text:'“风从盐场那边吹来时，窗台会留下一层细白的光。我小时候以为那是海把信寄到了家里。”'},
+      {title:'桥下的放学路',tag:'示范故事 B',text:'“雨停以后，石桥底下的水声会变得很清楚。我们把书包放在石阶上，等最后一班渡船亮灯。”'},
+      {title:'石榴树还在',tag:'示范故事 C',text:'“院墙翻新了好几次，只有那棵石榴树一直站在原地。每到秋天，邻居会把果子分成小袋放在门口。”'}
+    ];
+    function drawArt(){
+      const c=$('#archiveCanvas');if(!c)return;
+      const ctx=c.getContext('2d'),w=c.width,h=c.height,st=stories[archive.story];
+      const palettes={dusk:['#1e3d50','#e7a06f','#e4cb91'],sea:['#164d55','#76c7b3','#f2d08a'],clay:['#563b43','#df8c6a','#e3c5a2']};
+      const p=palettes[archive.palette]||palettes.dusk;ctx.clearRect(0,0,w,h);
+      const g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,p[0]);g.addColorStop(1,'#0b1723');ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+      let seed=0;for(let i=0;i<st.title.length;i++)seed=(seed*31+st.title.charCodeAt(i))>>>0;
+      const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
+      ctx.globalAlpha=.72;for(let i=0;i<34;i++){ctx.fillStyle=i%3===0?p[2]:p[1];const r=8+rand()*50;ctx.beginPath();ctx.arc(rand()*w,rand()*h,r,0,Math.PI*2);ctx.fill()}
+      ctx.globalAlpha=.8;ctx.strokeStyle=archive.edited?'#f7e6b5':p[2];ctx.lineWidth=archive.edited?5:3;
+      for(let i=0;i<5;i++){ctx.beginPath();const y=270+i*29+rand()*12;ctx.moveTo(0,y);ctx.bezierCurveTo(w*.3,y-80-rand()*30,w*.63,y+60,w,y-35+rand()*60);ctx.stroke()}
+      ctx.globalAlpha=1;ctx.fillStyle='#f6efe1';ctx.font='32px Georgia, serif';ctx.fillText(st.title,46,68);ctx.fillStyle='#d1d8cf';ctx.font='15px sans-serif';ctx.fillText(archive.edited?'人工修订：保留叙事焦点，压低背景干扰':'程序化视觉草图 · '+st.tag,48,101);
+    }
+    function renderArchive(){
+      const st=stories[archive.story],stageText=['等待生成草图','草图已生成 · 请调整风格或构图','人工修订已完成 · 可复核创作记录'][archive.stage];
+      const main='<div class="panel"><div class="spread"><div><div class="kicker">Story to visual</div><h2>选择一段示范故事</h2></div><span class="pill">'+stageText+'</span></div><div class="row" style="margin:12px 0">'+stories.map((x,i)=>'<button class="btn smallbtn '+(archive.story===i?'primary':'')+'" data-story="'+i+'">'+x.title+'</button>').join('')+'</div><div class="story-card"><em>'+st.tag+' · 虚构占位文本，非真实采访</em>'+st.text+'</div><div class="stage"><span class="pill '+(archive.stage===0?'active':'')+'">01 故事筛选</span><span class="pill '+(archive.stage===1?'active':'')+'">02 视觉草图</span><span class="pill '+(archive.stage===2?'active':'')+'">03 人工修订</span></div><canvas class="archive-art" id="archiveCanvas" width="1000" height="470" aria-label="程序化视觉草图"></canvas><div class="row" style="margin-top:12px"><label class="small">色彩方向 <select class="field" id="palette"><option value="dusk" '+(archive.palette==='dusk'?'selected':'')+'>暮色蓝金</option><option value="sea" '+(archive.palette==='sea'?'selected':'')+'>海盐青绿</option><option value="clay" '+(archive.palette==='clay'?'selected':'')+'>陶土暖红</option></select></label><button class="btn" data-generate>生成视觉草图</button><button class="btn primary" data-edit '+(archive.stage<1?'disabled':'')+'>人工修订并留痕</button></div></div>';
+      const side='<div class="panel"><div class="kicker">Human-in-the-loop</div><h2>协作记录</h2><div class="list"><div class="log"><time>01 · SOURCE</time>选择故事句子并确认授权状态。</div><div class="log"><time>02 · DIRECTION</time>创作者决定主题、色彩和视觉焦点。</div><div class="log"><time>03 · DRAFT</time>当前页面用 Canvas 规则绘制示意，不调用 AIGC 模型。</div><div class="log"><time>04 · HUMAN EDIT</time>人工修订按钮调整线条与标注，示范人类决策点。</div></div><div class="callout">正式作品请使用取得授权的实地访谈，保存受访者同意记录、生成提示词、候选稿与人工修改说明。</div></div>';
+      setPage(main,side,'草图为程序化占位图，不是生成式 AI 输出');
+      drawArt();
+      $$('[data-story]').forEach(b=>b.onclick=()=>{archive.story=Number(b.dataset.story);archive.stage=0;archive.edited=false;renderArchive()});
+      $('#palette').onchange=e=>{archive.palette=e.target.value;drawArt()};
+      $('[data-generate]').onclick=()=>{archive.stage=Math.max(1,archive.stage);archive.edited=false;renderArchive()};
+      const edit=$('[data-edit]');if(edit)edit.onclick=()=>{archive.stage=2;archive.edited=true;renderArchive()};
+    }
+
+    // 06 · Curated offline astronomy examples with traceable official references.
+    const star={messages:[{role:'assistant',text:'你好，我是星问演示助手。选一个问题开始；每条事实会展示来源，资料库没有覆盖的问题我会说明。',source:null}],score:0};
+    const facts=[
+      {keys:['光年','距离单位'],answer:'光年是距离单位，表示光在一个地球年内行进的距离，约为 9.46 万亿千米。它不是时间单位。',label:'NASA Space Place · What Is a Light-Year?',url:'https://spaceplace.nasa.gov/light-year/en/'},
+      {keys:['月球背面','暗面','黑暗'],answer:'“月球背面”不是永远黑暗的一面。月球自转与绕地球公转保持同步，所以从地球长期只能看到同一半球；背面也会经历昼夜。',label:'NASA Science · Moon Facts',url:'https://science.nasa.gov/moon/facts/'},
+      {keys:['月球多远','月球距离','地球多远'],answer:'月球到地球的平均距离约为 384,400 千米。这个数值会随月球轨道位置变化。',label:'NASA Science · Moon Facts',url:'https://science.nasa.gov/moon/facts/'}
+    ];
+    function answerFor(q){
+      const norm=q.toLowerCase();
+      for(const f of facts)if(f.keys.some(k=>norm.includes(k)))return f;
+      return {answer:'我在当前演示资料库中没有找到能支持这个问题的条目。为了避免编造，我先不回答；正式版本可以扩充经过审核的资料并加入检索来源。',label:null,url:null};
+    }
+    function paintStar(){
+      const chat=star.messages.map(m=>'<div class="bubble '+m.role+'">'+esc(m.text)+(m.source?'<br><a target="_blank" rel="noopener" href="'+m.url+'">来源：'+esc(m.source)+' ↗</a>':'')+'</div>').join('');
+      const main='<div class="panel"><div class="spread"><div><div class="kicker">Evidence-first guide</div><h2>你想从哪颗星开始？</h2></div><span class="pill">本地演示资料库</span></div><div class="preset"><button class="btn smallbtn" data-ask="光年是什么？">光年是什么？</button><button class="btn smallbtn" data-ask="月球背面总是黑暗的吗？">月球背面总是黑暗的吗？</button><button class="btn smallbtn" data-ask="月球离地球多远？">月球离地球多远？</button></div><div class="chatlog" id="chatlog">'+chat+'</div><form class="askrow" id="askForm"><input class="field" id="question" aria-label="输入天文问题" placeholder="输入一个天文问题…"><button class="btn primary">提问</button></form></div>';
+      const side='<div class="panel"><div class="kicker">Mission / 01</div><h2>点亮一条知识线索</h2><p class="small">请判断：月球背面永远没有阳光吗？</p><div class="row"><button class="quiz-answer" data-quiz="true">是</button><button class="quiz-answer" data-quiz="false">不是</button></div><p class="small" id="quizResult">'+(star.score?'已完成 · 答对 1 题':'')+'</p><div class="rule"></div><h3>助手边界</h3><div class="list"><div class="log">答案来自固定示例，不是实时大模型生成。</div><div class="log">点击来源打开 NASA 页面核对原文。</div><div class="log">未命中问题会拒答，不猜测。</div></div><div class="callout">原型目标是展示带来源的交互设计。正式参赛需要补齐知识库、检索评估集和引用准确率测试。</div></div>';
+      setPage(main,side,'NASA 来源链接嵌入演示答案');
+      const form=$('#askForm');form.onsubmit=e=>{e.preventDefault();ask($('#question').value)};
+      $$('[data-ask]').forEach(b=>b.onclick=()=>ask(b.dataset.ask));
+      $$('[data-quiz]').forEach(b=>b.onclick=()=>{star.score=b.dataset.quiz==='false'?1:0;const r=$('#quizResult');r.textContent=star.score?'答对了：月球背面也会经历昼夜。':'再想一想：月球背面也会被太阳照亮。';r.className='small '+(star.score?'success':'warning')});
+    }
+    function ask(q){
+      q=q.trim();if(!q)return;
+      const f=answerFor(q);star.messages.push({role:'user',text:q});star.messages.push({role:'assistant',text:f.answer,source:f.label,url:f.url});paintStar();
+      const log=$('#chatlog');log.scrollTop=log.scrollHeight;
+    }
+
+    // 07 · Character consistency helper: compares human-entered tags, never claims vision AI.
+    const mirror={profile:{coat:'深海蓝',mark:'银色星环'},shots:[
+      {name:'镜头 01 · 登舰',coat:'深海蓝',mark:'银色星环'},
+      {name:'镜头 02 · 控制室',coat:'青绿色',mark:'银色星环'},
+      {name:'镜头 03 · 舱外',coat:'深海蓝',mark:'红色腕带'}
+    ],reviewed:new Set(),files:[]};
+    function diffFor(s){const d=[];if(s.coat!==mirror.profile.coat)d.push('服装颜色');if(s.mark!==mirror.profile.mark)d.push('标志物');return d}
+    function renderMirror(){
+      const rows=mirror.shots.map((s,i)=>{const d=diffFor(s),rev=mirror.reviewed.has(i);return '<div class="shotrow"><strong>'+s.name+'</strong><label>服装<select class="field" data-shot="'+i+'" data-key="coat"><option '+(s.coat==='深海蓝'?'selected':'')+'>深海蓝</option><option '+(s.coat==='青绿色'?'selected':'')+'>青绿色</option><option '+(s.coat==='沙金色'?'selected':'')+'>沙金色</option><option '+(s.coat==='未标注'?'selected':'')+'>未标注</option></select></label><label>标志物<select class="field" data-shot="'+i+'" data-key="mark"><option '+(s.mark==='银色星环'?'selected':'')+'>银色星环</option><option '+(s.mark==='红色腕带'?'selected':'')+'>红色腕带</option><option '+(s.mark==='无'?'selected':'')+'>无</option><option '+(s.mark==='未标注'?'selected':'')+'>未标注</option></select></label><span class="shotstatus '+(d.length&&!rev?'flag':'')+'">'+(rev?'人工复核通过':d.length?'待复核：'+d.join('、'):'一致')+'</span></div>'}).join('');
+      const thumbs=mirror.files.map(f=>'<img class="thumb" src="'+f.url+'" alt="'+esc(f.name)+'"><span class="small">'+esc(f.name)+'</span>').join('');
+      const count=mirror.shots.reduce((n,s,i)=>n+(diffFor(s).length&&!mirror.reviewed.has(i)?1:0),0);
+      const main='<div class="panel"><div class="spread"><div><div class="kicker">Continuity check</div><h2>角色标准卡</h2></div><span class="pill">'+count+' 个镜头待复核</span></div><div class="rolecard"><div class="avatar" aria-hidden="true"></div><div><strong>林澈 · 维修工程师</strong><div class="small">服装：深海蓝 · 标志物：银色星环</div></div></div><div class="rule"></div><div class="spread"><h3>分镜标签</h3><div class="row"><button class="btn smallbtn" data-add-shot>＋ 添加镜头</button><button class="btn smallbtn" data-export>导出复核报告</button></div></div>'+rows+'<div class="rule"></div><label class="small">可选：从本机选择分镜图片做视觉对照（仅在本页本地预览）<input class="field" type="file" id="imageFiles" accept="image/*" multiple></label><div class="thumbs">'+thumbs+'</div><p class="small" style="margin-top:12px">图片不会上传；当前一致性判断只读取上面的人工标签，不进行图像识别。</p></div>';
+      const side='<div class="panel"><div class="kicker">Human review queue</div><h2>复核建议</h2><div class="list"><div class="log">对照角色标准卡，确认服装颜色与标志物。</div><div class="log">有差异的镜头可调整标签或标记“人工复核通过”。</div><div class="log">导出报告可用于记录问题、判断与修订负责人。</div></div><div class="callout">规则辅助不等于自动视觉识别。正式开发可再接入图像模型，并用人工标注集测量漏检与误报。</div><div class="rule"></div><div class="kicker">角色一致性</div><p class="small">本次演示：'+mirror.shots.length+' 个镜头 / '+count+' 个标签差异待复核。</p></div>';
+      setPage(main,side,'差异来自手动标注；不上传素材，不做自动识别');
+      $$('[data-shot]').forEach(sel=>sel.onchange=()=>{const i=Number(sel.dataset.shot);mirror.shots[i][sel.dataset.key]=sel.value;mirror.reviewed.delete(i);renderMirror()});
+      $('[data-add-shot]').onclick=()=>{mirror.shots.push({name:'镜头 '+String(mirror.shots.length+1).padStart(2,'0')+' · 新增',coat:'未标注',mark:'未标注'});renderMirror()};
+      $('[data-export]').onclick=exportMirror;
+      $('#imageFiles').onchange=e=>{mirror.files.forEach(f=>URL.revokeObjectURL(f.url));mirror.files=Array.from(e.target.files).filter(f=>f.type.startsWith('image/')).map(f=>({name:f.name,url:URL.createObjectURL(f)}));renderMirror()};
+      $$('.shotrow').forEach((r,i)=>{if(diffFor(mirror.shots[i]).length&&!mirror.reviewed.has(i)){const b=document.createElement('button');b.className='btn smallbtn';b.textContent='标记已复核';b.onclick=()=>{mirror.reviewed.add(i);renderMirror()};r.appendChild(b)}});
+    }
+    function exportMirror(){
+      const lines=['镜间角色一致性复核报告','角色：林澈','标准：服装='+mirror.profile.coat+'；标志物='+mirror.profile.mark,''];
+      mirror.shots.forEach((s,i)=>lines.push(s.name+' | 服装='+s.coat+' | 标志物='+s.mark+' | '+(mirror.reviewed.has(i)?'人工复核通过':diffFor(s).length?'差异：'+diffFor(s).join('、'):'一致')));
+      const blob=new Blob(['\ufeff'+lines.join('\r\n')],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='镜间-角色一致性复核报告.txt';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    }
+
+    if(world==='ice')renderIce();
+    else if(world==='moon')renderMoon();
+    else if(world==='sync')renderSync();
+    else if(world==='archive')renderArchive();
+    else if(world==='star')paintStar();
+    else if(world==='mirror')renderMirror();
+    else renderIce();
+  </script>
+</body>
+</html>
