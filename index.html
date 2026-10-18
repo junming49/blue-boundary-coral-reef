@@ -127,6 +127,14 @@
       .bottomline span:last-child { text-align: left; }
     }
   </style>
+
+<style id="award-layer-style">
+.award-panel{--award-accent:#54dec3;max-width:1240px;margin:34px auto 52px;padding:clamp(18px,3vw,30px);border:1px solid rgba(116,224,207,.28);border-radius:20px;background:linear-gradient(145deg,rgba(8,35,44,.96),rgba(13,55,62,.95));color:#e7f4f1;box-shadow:0 18px 55px rgba(0,0,0,.18);font:inherit}
+.award-panel *{box-sizing:border-box}.award-kicker{color:var(--award-accent);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase}.award-panel h2{margin:.45rem 0 .6rem;font-size:clamp(1.35rem,2.3vw,2rem)}.award-panel p{line-height:1.65;color:inherit;opacity:.88}.award-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:18px 0}.award-card{padding:16px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(255,255,255,.055)}.award-card b{display:block;color:var(--award-accent);margin-bottom:7px}.award-card a{color:var(--award-accent)}.award-panel button,.award-panel .award-button{border:1px solid var(--award-accent);border-radius:10px;padding:10px 14px;background:transparent;color:inherit;font:inherit;cursor:pointer}.award-panel button:hover,.award-panel .award-button:hover{background:rgba(255,255,255,.1)}.award-panel button:focus-visible,.award-panel a:focus-visible,.award-panel input:focus-visible,.award-panel textarea:focus-visible{outline:3px solid var(--award-accent);outline-offset:3px}.award-output{min-height:1.5em;color:var(--award-accent)!important}.award-panel textarea,.award-panel input[type=text],.award-panel input[type=number]{width:100%;padding:10px;border:1px solid rgba(255,255,255,.22);border-radius:9px;background:rgba(0,0,0,.18);color:inherit;font:inherit}.award-panel textarea{min-height:82px;resize:vertical}.award-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.award-small{font-size:.86rem;opacity:.75}.award-panel ul{margin:.4rem 0;padding-left:1.1rem;line-height:1.7}.award-panel [hidden]{display:none!important}
+.award-panel.paper{--award-accent:#a34836;background:#f3ead9;color:#292b27;border-color:#d9c8a9;box-shadow:0 16px 45px rgba(37,25,12,.13)}.award-panel.paper .award-card{background:rgba(111,77,42,.06);border-color:rgba(111,77,42,.16)}.award-panel.paper textarea,.award-panel.paper input[type=text]{background:#fffaf0;color:#292b27;border-color:#d0bda0}
+@media(max-width:650px){.award-panel{margin:22px 14px 36px;padding:18px}.award-grid{grid-template-columns:1fr}}
+</style>
+
 </head>
 <body>
   <main class="app">
@@ -425,5 +433,36 @@
       sizeCanvas(); updateMeters(); requestAnimationFrame(draw);
     })();
   </script>
+
+<section class="award-panel reef-review" role="region" aria-labelledby="reefReviewTitle">
+  <span class="award-kicker">SCIENCE NOTE / SIMULATION SCOPE</span>
+  <h2 id="reefReviewTitle">修复决策实验记录</h2>
+  <p>这是一套教学情境推演，不是生态预测。当前健康度、热应激、清晰度与多样性是演示量表；“30 天后”画面由规则驱动，不能替代现场监测或修复方案论证。</p>
+  <div class="award-grid">
+    <article class="award-card"><b>科学参照</b><ul><li>珊瑚白化与温度、光照、养分等压力有关。</li><li>修复要结合降低局地压力、适宜生境和苗圃管理。</li></ul><a href="https://oceanservice.noaa.gov/facts/coral_bleach.html" target="_blank" rel="noopener">NOAA：珊瑚白化</a><br><a href="https://coralreef.noaa.gov/topics/coral-restoration" target="_blank" rel="noopener">NOAA：珊瑚礁修复</a></article>
+    <article class="award-card"><b>可复核流程</b><p>读数 → 选择干预 → 查看状态变化。导出记录包含本次操作和屏幕上的指标，便于团队复盘，不含姓名或设备标识。</p><p class="award-small">参赛前仍需使用真实、获授权的监测数据校准情境参数，并由相关专业人员审核。</p></article>
+    <article class="award-card"><b>学生验证待办</b><p>需要团队自行补充：数据来源与授权、模型假设、生态专业审核意见、目标用户试玩记录。当前没有伪造实测数据或用户测试结论。</p><p id="reefTraceStatus" class="award-output" aria-live="polite">尚未记录本次推演操作。</p></article>
+  </div>
+  <div class="award-actions"><button id="reefExport" type="button">导出本轮推演 JSON</button><span class="award-small">文件只在浏览器本地生成。</span></div>
+</section>
+
+
+<script id="award-layer-logic">
+(() => {
+  const actions=[], startedAt=new Date().toISOString();
+  document.addEventListener("click", event => {
+    const button=event.target.closest("button");
+    if(!button || button.id==="reefExport") return;
+    const label=(button.innerText||button.getAttribute("aria-label")||"").replace(/\s+/g," ").trim();
+    if(label){actions.push({time:new Date().toISOString(),action:label});document.getElementById("reefTraceStatus").textContent="已记录 "+actions.length+" 项操作；记录仅保存在本机。"}
+  },true);
+  const read=id=>document.getElementById(id)?.textContent?.trim()||"";
+  document.getElementById("reefExport").addEventListener("click",()=>{
+    const report={project:"蓝色边界：珊瑚修复站",recordedAt:startedAt,simulationOnly:true,disclaimer:"演示量表非现场观测或预测结果。",actions,displayedMetrics:{health:read("healthValue"),clarity:read("clarityValue"),heat:read("heatValue"),diversity:read("diversityValue")},phase:read("phaseTitle"),sources:["https://oceanservice.noaa.gov/facts/coral_bleach.html","https://coralreef.noaa.gov/topics/coral-restoration"]};
+    const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(report,null,2)],{type:"application/json"}));a.download="珊瑚修复-本轮推演记录.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  });
+})();
+</script>
+
 </body>
 </html>
