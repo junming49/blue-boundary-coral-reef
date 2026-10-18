@@ -135,6 +135,12 @@
 @media(max-width:650px){.award-panel{margin:22px 14px 36px;padding:18px}.award-grid{grid-template-columns:1fr}}
 </style>
 
+
+<style>
+.frontier-panel{margin:20px 0;padding:18px;border:1px solid rgba(137,213,222,.26);border-radius:14px;background:linear-gradient(140deg,rgba(10,34,46,.95),rgba(14,24,37,.98));color:#eaf5f6;font:14px/1.65 system-ui,"Microsoft YaHei",sans-serif}
+.frontier-panel h2{font-size:19px;margin:0 0 7px;color:#f6fbfc}.frontier-panel h3{font-size:15px;margin:14px 0 5px;color:#a8e5df}.frontier-panel p{color:#bfd3d5;margin:7px 0}.frontier-panel .fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:12px 0}.frontier-panel .fcard{padding:13px;border:1px solid rgba(163,216,220,.18);border-radius:11px;background:rgba(255,255,255,.035)}.frontier-panel label{display:block;margin:7px 0;color:#d9e9ea}.frontier-panel input:not([type=range]):not([type=checkbox]),.frontier-panel select,.frontier-panel textarea{width:100%;padding:9px 10px;border-radius:8px;border:1px solid rgba(169,215,222,.3);background:#0b1c27;color:#eff8f8;font:inherit}.frontier-panel textarea{min-height:72px}.frontier-panel button{margin:6px 7px 0 0;padding:9px 12px;border:1px solid rgba(136,220,216,.42);border-radius:8px;background:#13434a;color:#efffff;font:inherit;cursor:pointer}.frontier-panel button:hover{background:#1b5b5d}.frontier-panel button:focus-visible,.frontier-panel input:focus-visible,.frontier-panel select:focus-visible,.frontier-panel textarea:focus-visible{outline:3px solid #ffd66d;outline-offset:2px}.frontier-panel .foutput{min-height:28px;color:#b7f1c6;margin-top:9px}.frontier-panel .fnotice{padding:10px 12px;border-left:3px solid #e6be69;background:rgba(230,190,105,.08);color:#dfebeb}.frontier-panel table{width:100%;border-collapse:collapse;margin-top:9px}.frontier-panel td,.frontier-panel th{padding:7px;text-align:left;border-bottom:1px solid rgba(163,216,220,.15)}.frontier-panel .ftags{display:flex;flex-wrap:wrap;gap:8px}.frontier-panel .ftag{display:inline-block;padding:3px 8px;border-radius:99px;background:rgba(127,217,208,.12);color:#b6ece7}.frontier-panel .spatial{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;width:72px;height:72px}.frontier-panel .spatial i{display:block;border-radius:3px;background:#16404a}.frontier-panel .spatial i.hot{background:#e07852}.frontier-panel .spatial i.warm{background:#d8b15c}.frontier-panel .rowcheck{display:flex;align-items:center;gap:8px}.frontier-panel .rowcheck label{display:flex;align-items:center;gap:6px;margin:3px 0}.frontier-panel [hidden]{display:none!important}
+@media(max-width:650px){.frontier-panel{margin:15px 10px;padding:14px}.frontier-panel table{font-size:12px}}
+</style>
 </head>
 <body>
   <main class="app">
@@ -431,6 +437,12 @@
       }));
       window.addEventListener('resize', sizeCanvas);
       sizeCanvas(); updateMeters(); requestAnimationFrame(draw);
+      window.reefControl = { applyScenario(heatShock, turbidity, plan) {
+        initial.heat = clamp(72 + Number(heatShock || 0));
+        initial.clarity = clamp(48 - Number(turbidity || 0));
+        reset(); toTreatment(); selected = [...plan]; updatePicker(); updateMeters();
+      } };
+
     })();
   </script>
 
@@ -464,5 +476,21 @@
 })();
 </script>
 
+
+<section class="frontier-panel" id="reefRobustLab" aria-labelledby="reefRobustTitle">
+ <h2 id="reefRobustTitle">韧性方案实验室｜先看方案在压力变化下是否稳健</h2>
+ <p>把热浪和悬沙强度作为情境变量，比较现有三组修复组合。规则与主推演一致，分数是教学模型中的目标权重，不是生态学预测。</p>
+ <div class="fgrid"><div class="fcard"><label for="reefHeatShock">热浪压力增量：<output id="reefHeatValue">0</output></label><input id="reefHeatShock" type="range" min="0" max="25" value="0">
+ <label for="reefTurbidity">悬沙压力增量：<output id="reefTurbidityValue">0</output></label><input id="reefTurbidity" type="range" min="0" max="25" value="0"></div>
+ <div class="fcard"><label for="reefObjective">方案排序目标</label><select id="reefObjective"><option value="resilience">综合韧性</option><option value="diversity">优先生物多样性</option><option value="clarity">优先改善水体条件</option></select><button id="reefCompare" type="button">比较三种组合</button><button id="reefApplyPlan" type="button">把最佳组合送入主推演</button><p id="reefPlanStatus" class="foutput" aria-live="polite">调整压力条件后比较组合。</p></div></div>
+ <div id="reefPlanTable"></div>
+ <div class="fnotice">局限：模型只编码当前原型中四个指标和三种干预的简化关系；未校准真实珊瑚监测数据，也未纳入物种差异、海流、病害和维护成本。</div>
+</section>
+<script>
+(()=>{const $=id=>document.getElementById(id),heat=$('reefHeatShock'),turb=$('reefTurbidity'),obj=$('reefObjective'),plans=[['clean','nursery'],['clean','shade'],['nursery','shade']],names={clean:'清理悬浮泥沙',nursery:'投放珊瑚苗圃',shade:'搭建临时遮阳网'};let best=null;
+function calc(keys){const v={health:32,clarity:Math.max(0,48- +turb.value),heat:Math.min(100,72+ +heat.value),diversity:28};for(const k of keys){if(k==='clean'){v.clarity+=23;v.health+=5;v.diversity+=2}if(k==='nursery'){v.health+=v.clarity>=60?17:7;v.diversity+=16}if(k==='shade'){v.heat-=21;v.health+=9}}if(v.clarity>=65)v.health+=6;if(v.heat<=58)v.health+=5;Object.keys(v).forEach(k=>v[k]=Math.max(0,Math.min(100,Math.round(v[k]))));const score=obj.value==='diversity'?v.diversity*.55+v.health*.25+v.clarity*.2:obj.value==='clarity'?v.clarity*.6+v.health*.2+(100-v.heat)*.2:v.health*.45+v.diversity*.25+(100-v.heat)*.3;return {keys,values:v,score:+score.toFixed(1)}}
+function run(){$('reefHeatValue').value=heat.value;$('reefTurbidityValue').value=turb.value;const rows=plans.map(calc).sort((a,b)=>b.score-a.score);best=rows[0];$('reefPlanTable').innerHTML='<table><thead><tr><th>组合</th><th>健康</th><th>清晰</th><th>热应激</th><th>多样性</th><th>目标分</th></tr></thead><tbody>'+rows.map((r,i)=>'<tr><td>'+(i===0?'★ 推荐：':'')+r.keys.map(k=>names[k]).join(' + ')+'</td><td>'+r.values.health+'</td><td>'+r.values.clarity+'</td><td>'+r.values.heat+'</td><td>'+r.values.diversity+'</td><td>'+r.score+'</td></tr>').join('')+'</tbody></table>';$('reefPlanStatus').textContent='按“'+obj.options[obj.selectedIndex].text+'”排序；可把首选组合载入主推演再亲自部署。'}
+['input','change'].forEach(ev=>{heat.addEventListener(ev,run);turb.addEventListener(ev,run);obj.addEventListener(ev,run)});$('reefCompare').onclick=run;$('reefApplyPlan').onclick=()=>{if(!best)run();window.reefControl.applyScenario(+heat.value,+turb.value,best.keys);$('reefPlanStatus').textContent='已载入主推演；请再次检查干预组合，再点击原页面“部署修复方案”。'};run();})();
+</script>
 </body>
 </html>
