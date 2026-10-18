@@ -79,4 +79,31 @@ const priorRespond=respond;respond=function(q){priorRespond(q);const match=kb.fi
 render()
 })();
 </script>
+<style id="jury-evidence-style">
+#evidence-lab{max-width:1120px;margin:38px auto;padding:24px;border:1px solid rgba(100,120,140,.25);border-radius:18px;background:rgba(255,255,255,.94);color:#1e293b;box-shadow:0 14px 40px rgba(25,40,60,.08);font:inherit}
+#evidence-lab h2{margin:0 0 8px;font-size:1.5rem}#evidence-lab h3{margin:22px 0 8px;font-size:1.05rem}
+#evidence-lab p{line-height:1.65}#evidence-lab .ev-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:12px;margin:14px 0}
+#evidence-lab label{display:grid;gap:6px;font-size:.92rem}#evidence-lab input,#evidence-lab textarea,#evidence-lab select{width:100%;box-sizing:border-box;padding:10px 11px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:#172033;font:inherit}
+#evidence-lab textarea{min-height:90px;resize:vertical}#evidence-lab button{border:0;border-radius:9px;padding:10px 14px;background:#143c57;color:#fff;font:inherit;cursor:pointer}
+#evidence-lab button.secondary{background:#e8eef3;color:#143c57}#evidence-lab .ev-note{padding:12px 14px;border-left:3px solid #6c92a9;background:#f2f6f8;border-radius:5px}
+#evidence-lab .ev-row{padding:11px 0;border-bottom:1px solid #e5eaf0;line-height:1.55}#evidence-lab .ev-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+#evidence-lab .ev-small{font-size:.86rem;color:#536273}#evidence-lab .ev-metric{display:inline-block;padding:8px 10px;margin:4px 6px 4px 0;border-radius:9px;background:#edf3f6}
+#evidence-lab .ev-check{display:flex;align-items:flex-start;gap:9px}.ev-check input{width:auto!important;margin-top:4px}
+@media(max-width:600px){#evidence-lab{padding:17px;margin:22px 12px}}
+</style>
+<section id="evidence-lab">
+<h2>AIGC 回答证据审计</h2>
+<p class="ev-note">把任意模型的回答粘贴进来，按可核验主张逐条标注来源与支持程度。这是人工审计工具，不会自动调用或评价 AI，也不会把“有链接”当成“已证实”。</p>
+<label>待审计回答<textarea id="starAuditAnswer" maxlength="6000" placeholder="每行一个可核查主张；先删除寒暄和纯修辞句"></textarea></label>
+<div class="ev-actions"><button type="button" id="starSplitClaims">拆分成主张</button><button type="button" class="secondary" id="starAuditExport">导出审计 JSON</button></div>
+<div id="starClaimRows"></div><h3>覆盖情况</h3><div id="starAuditSummary" class="ev-small">尚未生成审计条目。</div>
+</section>
+<script>
+(function(){
+ const input=document.getElementById("starAuditAnswer"),box=document.getElementById("starClaimRows"),sum=document.getElementById("starAuditSummary");
+ function update(){const rows=[...box.querySelectorAll(".claim-row")];let supported=0,weak=0,unsupported=0,unreviewed=0;rows.forEach(r=>{const v=r.querySelector("select").value;if(v==="有来源支持")supported++;else if(v==="部分支持")weak++;else if(v==="不支持")unsupported++;else unreviewed++});sum.textContent="主张 "+rows.length+" 条 · 有来源支持 "+supported+" · 部分支持 "+weak+" · 不支持 "+unsupported+" · 未核 "+unreviewed+"。这是人工标注统计，不是模型准确率。"}
+ document.getElementById("starSplitClaims").onclick=()=>{const claims=input.value.split(/\n+/).map(x=>x.trim()).filter(Boolean);if(!claims.length){alert("请先粘贴回答内容");return}box.replaceChildren();claims.forEach((claim,i)=>{const row=document.createElement("div");row.className="claim-row ev-row";const title=document.createElement("p");title.textContent=(i+1)+". "+claim;const fields=document.createElement("div");fields.className="ev-grid";const src=document.createElement("input");src.type="url";src.placeholder="来源 URL 或文献 DOI";src.setAttribute("aria-label","第"+(i+1)+"条主张的来源");const sel=document.createElement("select");sel.setAttribute("aria-label","第"+(i+1)+"条主张的支持程度");["未核","有来源支持","部分支持","不支持"].forEach(v=>{const o=document.createElement("option");o.textContent=v;sel.appendChild(o)});src.addEventListener("input",update);sel.addEventListener("change",update);fields.append(src,sel);row.append(title,fields);box.appendChild(row)});update()};
+ document.getElementById("starAuditExport").onclick=()=>{const records=[...box.querySelectorAll(".claim-row")].map(r=>({claim:r.querySelector("p").textContent,source:r.querySelector("input").value,assessment:r.querySelector("select").value}));if(!records.length){alert("尚无审计条目");return}const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify({notice:"人工证据审计记录；请保存原始模型输出和审核依据，不能仅凭此统计宣称准确率。",records},null,2)],{type:"application/json"}));a.download="star-answer-evidence-audit.json";a.click();URL.revokeObjectURL(a.href)};
+})();
+</script>
 </body></html>

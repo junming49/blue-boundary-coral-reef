@@ -81,4 +81,41 @@ weights.addEventListener("input",e=>{if(e.target.matches("[data-weight]"))run()}
 $("deepMoonExport").addEventListener("click",()=>{if(!latest)run();const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(latest,null,2)],{type:"application/json"}));a.download="月背电台-证据权重分析.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)});run()
 })();
 </script>
+<style id="jury-evidence-style">
+#evidence-lab{max-width:1120px;margin:38px auto;padding:24px;border:1px solid rgba(100,120,140,.25);border-radius:18px;background:rgba(255,255,255,.94);color:#1e293b;box-shadow:0 14px 40px rgba(25,40,60,.08);font:inherit}
+#evidence-lab h2{margin:0 0 8px;font-size:1.5rem}#evidence-lab h3{margin:22px 0 8px;font-size:1.05rem}
+#evidence-lab p{line-height:1.65}#evidence-lab .ev-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:12px;margin:14px 0}
+#evidence-lab label{display:grid;gap:6px;font-size:.92rem}#evidence-lab input,#evidence-lab textarea,#evidence-lab select{width:100%;box-sizing:border-box;padding:10px 11px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:#172033;font:inherit}
+#evidence-lab textarea{min-height:90px;resize:vertical}#evidence-lab button{border:0;border-radius:9px;padding:10px 14px;background:#143c57;color:#fff;font:inherit;cursor:pointer}
+#evidence-lab button.secondary{background:#e8eef3;color:#143c57}#evidence-lab .ev-note{padding:12px 14px;border-left:3px solid #6c92a9;background:#f2f6f8;border-radius:5px}
+#evidence-lab .ev-row{padding:11px 0;border-bottom:1px solid #e5eaf0;line-height:1.55}#evidence-lab .ev-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+#evidence-lab .ev-small{font-size:.86rem;color:#536273}#evidence-lab .ev-metric{display:inline-block;padding:8px 10px;margin:4px 6px 4px 0;border-radius:9px;background:#edf3f6}
+#evidence-lab .ev-check{display:flex;align-items:flex-start;gap:9px}.ev-check input{width:auto!important;margin-top:4px}
+@media(max-width:600px){#evidence-lab{padding:17px;margin:22px 12px}}
+</style>
+<section id="evidence-lab">
+<h2>线索—主张论证图</h2>
+<p class="ev-note">把故事线索明确连到某个解释，并说明它支持、反驳还是无法区分。图表只整理玩家的推理，不自动证明任何一条解释为真。</p>
+<form id="moonArgumentForm">
+<div class="ev-grid">
+<label>线索<select name="clue" required><option>继电器切换记录</option><option>维修员纸面日志</option><option>重复脉冲录音</option><option>东侧馈线阵列图</option></select></label>
+<label>竞争性解释<select name="hypothesis" required><option>解释 A：人为发送求援信号</option><option>解释 B：设备故障造成重复脉冲</option></select></label>
+<label>证据关系<select name="relation" required><option value="支持">支持</option><option value="反驳">反驳</option><option value="无法区分">无法区分</option></select></label>
+<label>理由<textarea name="reason" maxlength="600" required placeholder="指出线索中的具体细节，以及其他可能解释"></textarea></label>
+</div>
+<div class="ev-actions"><button type="submit">加入论证图</button><button type="button" class="secondary" id="moonGraphExport">导出论证图 JSON</button><button type="button" class="secondary" id="moonGraphClear">清空本机记录</button></div>
+</form>
+<h3>各解释的证据分布</h3><div id="moonGraphSummary"></div><div id="moonGraphRows"></div>
+</section>
+<script>
+(function(){
+ const key="moon-claim-evidence-graph-v1",form=document.getElementById("moonArgumentForm");
+ const read=()=>{try{return JSON.parse(localStorage.getItem(key)||"[]")}catch(e){return []}};
+ function render(){const rows=read(),box=document.getElementById("moonGraphRows"),sum=document.getElementById("moonGraphSummary");box.replaceChildren();const stats=["解释 A：人为发送求援信号","解释 B：设备故障造成重复脉冲"].map(h=>{const a=rows.filter(x=>x.hypothesis===h);return h+"："+a.filter(x=>x.relation==="支持").length+" 条支持 / "+a.filter(x=>x.relation==="反驳").length+" 条反驳 / "+a.filter(x=>x.relation==="无法区分").length+" 条无法区分"});sum.textContent=rows.length?stats.join("；"):"尚无论证记录。";rows.slice().reverse().forEach(r=>{const d=document.createElement("div");d.className="ev-row";d.textContent=r.clue+" → "+r.hypothesis+"（"+r.relation+"）："+r.reason;box.appendChild(d)})}
+ form.addEventListener("submit",e=>{e.preventDefault();if(!form.reportValidity())return;const rows=read();rows.push({...Object.fromEntries(new FormData(form)),recordedAt:new Date().toISOString()});localStorage.setItem(key,JSON.stringify(rows));form.reset();render()});
+ document.getElementById("moonGraphExport").onclick=()=>{const rows=read();if(!rows.length){alert("尚无记录可导出");return}const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify({notice:"论证图记录的是体验者判断，不是概率或事实结论。",records:rows},null,2)],{type:"application/json"}));a.download="moon-claim-evidence.json";a.click();URL.revokeObjectURL(a.href)};
+ document.getElementById("moonGraphClear").onclick=()=>{if(confirm("清除当前浏览器保存的论证记录？")){localStorage.removeItem(key);render()}};
+ render();
+})();
+</script>
 </body></html>

@@ -527,5 +527,53 @@ $("deepReefRun").addEventListener("click",run);plan.addEventListener("change",ru
 $("deepReefExport").addEventListener("click",()=>{if(!latest)run();const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(latest,null,2)],{type:"application/json"}));a.download="珊瑚修复-季节轨迹推演.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)});
 })();
 </script>
+<style id="jury-evidence-style">
+#evidence-lab{max-width:1120px;margin:38px auto;padding:24px;border:1px solid rgba(100,120,140,.25);border-radius:18px;background:rgba(255,255,255,.94);color:#1e293b;box-shadow:0 14px 40px rgba(25,40,60,.08);font:inherit}
+#evidence-lab h2{margin:0 0 8px;font-size:1.5rem}#evidence-lab h3{margin:22px 0 8px;font-size:1.05rem}
+#evidence-lab p{line-height:1.65}#evidence-lab .ev-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:12px;margin:14px 0}
+#evidence-lab label{display:grid;gap:6px;font-size:.92rem}#evidence-lab input,#evidence-lab textarea,#evidence-lab select{width:100%;box-sizing:border-box;padding:10px 11px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:#172033;font:inherit}
+#evidence-lab textarea{min-height:90px;resize:vertical}#evidence-lab button{border:0;border-radius:9px;padding:10px 14px;background:#143c57;color:#fff;font:inherit;cursor:pointer}
+#evidence-lab button.secondary{background:#e8eef3;color:#143c57}#evidence-lab .ev-note{padding:12px 14px;border-left:3px solid #6c92a9;background:#f2f6f8;border-radius:5px}
+#evidence-lab .ev-row{padding:11px 0;border-bottom:1px solid #e5eaf0;line-height:1.55}#evidence-lab .ev-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+#evidence-lab .ev-small{font-size:.86rem;color:#536273}#evidence-lab .ev-metric{display:inline-block;padding:8px 10px;margin:4px 6px 4px 0;border-radius:9px;background:#edf3f6}
+#evidence-lab .ev-check{display:flex;align-items:flex-start;gap:9px}.ev-check input{width:auto!important;margin-top:4px}
+@media(max-width:600px){#evidence-lab{padding:17px;margin:22px 12px}}
+</style>
+<section id="evidence-lab">
+<h2>现场观测校准台</h2>
+<p class="ev-note">只录入团队自行采集或已获许可的数据。空表不会生成演示样本；记录仅保存在当前浏览器。页面中的恢复推演仍是简化规则，不会因填写观测记录自动变成经验证的生态模型。</p>
+<form id="coralFieldForm">
+<div class="ev-grid">
+<label>观测日期<input name="date" type="date" required></label>
+<label>样点代号（不含个人信息）<input name="site" maxlength="40" required placeholder="例如 R-01"></label>
+<label>活珊瑚覆盖率（%）<input name="cover" type="number" min="0" max="100" step="0.1" required></label>
+<label>水温（°C）<input name="temp" type="number" min="-5" max="50" step="0.1" required></label>
+<label>清澈度评分（0–100，须固定同一方法）<input name="clarity" type="number" min="0" max="100" step="1" required></label>
+<label>来源 / 授权说明 / 数据集编号<input name="source" maxlength="240" required placeholder="填写可复核来源，不要只写“网络”"></label>
+</div>
+<label class="ev-check"><input name="rights" type="checkbox" required><span>我已核实这条数据的采集授权或开放许可，并会在提交材料中保留来源。</span></label>
+<div class="ev-actions"><button type="submit">保存一条观测</button><button type="button" class="secondary" id="coralExport">导出观测 CSV</button><button type="button" class="secondary" id="coralClear">清空本机记录</button></div>
+</form>
+<h3>记录与首末差异</h3><div id="coralSummary" class="ev-small">尚无观测记录。</div><div id="coralRecords"></div>
+</section>
+<script>
+(function(){
+ const key="coral-field-observations-v1", form=document.getElementById("coralFieldForm");
+ const read=()=>{try{return JSON.parse(localStorage.getItem(key)||"[]")}catch(e){return []}};
+ const write=x=>localStorage.setItem(key,JSON.stringify(x));
+ function draw(){
+   const rows=read().sort((a,b)=>a.date.localeCompare(b.date)), summary=document.getElementById("coralSummary"), list=document.getElementById("coralRecords");
+   list.replaceChildren();
+   if(!rows.length){summary.textContent="尚无观测记录。";return}
+   summary.textContent=rows.length+" 条观测；当前只显示实测记录，不将相关性解释为修复效果。";
+   if(rows.length>1){const first=rows[0],last=rows[rows.length-1];summary.textContent+=" 覆盖率首末差："+(Number(last.cover)-Number(first.cover)).toFixed(1)+" 个百分点（"+first.date+" 至 "+last.date+"，未控制环境因素）。"}
+   rows.slice().reverse().forEach(x=>{const d=document.createElement("div");d.className="ev-row";d.textContent=x.date+" · "+x.site+" · 覆盖率 "+x.cover+"% · 水温 "+x.temp+"°C · 清澈度 "+x.clarity+"/100 · 来源："+x.source;list.appendChild(d)});
+ }
+ form.addEventListener("submit",e=>{e.preventDefault();if(!form.reportValidity())return;const x=Object.fromEntries(new FormData(form));const rows=read();rows.push({date:x.date,site:x.site,cover:Number(x.cover),temp:Number(x.temp),clarity:Number(x.clarity),source:x.source,rightsConfirmed:true,recordedAt:new Date().toISOString()});write(rows);form.reset();draw()});
+ document.getElementById("coralExport").onclick=()=>{const rows=read();if(!rows.length){alert("尚无记录可导出");return}const cols=["date","site","cover","temp","clarity","source","rightsConfirmed","recordedAt"];const q=v=>'"'+String(v??"").replaceAll('"','""')+'"';const csv=[cols.join(","),...rows.map(r=>cols.map(k=>q(r[k])).join(","))].join("\r\n");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}));a.download="coral-observations.csv";a.click();URL.revokeObjectURL(a.href)};
+ document.getElementById("coralClear").onclick=()=>{if(confirm("清除当前浏览器保存的观测记录？")){localStorage.removeItem(key);draw()}};
+ draw();
+})();
+</script>
 </body>
 </html>

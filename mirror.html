@@ -85,4 +85,44 @@ $("deepMirrorExport").addEventListener("click",()=>{if(!latest){$("deepMirrorOut
 refresh();document.getElementById("add")?.addEventListener("click",()=>setTimeout(refresh,0));document.getElementById("files")?.addEventListener("change",()=>setTimeout(refresh,0))
 })();
 </script>
+<style id="jury-evidence-style">
+#evidence-lab{max-width:1120px;margin:38px auto;padding:24px;border:1px solid rgba(100,120,140,.25);border-radius:18px;background:rgba(255,255,255,.94);color:#1e293b;box-shadow:0 14px 40px rgba(25,40,60,.08);font:inherit}
+#evidence-lab h2{margin:0 0 8px;font-size:1.5rem}#evidence-lab h3{margin:22px 0 8px;font-size:1.05rem}
+#evidence-lab p{line-height:1.65}#evidence-lab .ev-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:12px;margin:14px 0}
+#evidence-lab label{display:grid;gap:6px;font-size:.92rem}#evidence-lab input,#evidence-lab textarea,#evidence-lab select{width:100%;box-sizing:border-box;padding:10px 11px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:#172033;font:inherit}
+#evidence-lab textarea{min-height:90px;resize:vertical}#evidence-lab button{border:0;border-radius:9px;padding:10px 14px;background:#143c57;color:#fff;font:inherit;cursor:pointer}
+#evidence-lab button.secondary{background:#e8eef3;color:#143c57}#evidence-lab .ev-note{padding:12px 14px;border-left:3px solid #6c92a9;background:#f2f6f8;border-radius:5px}
+#evidence-lab .ev-row{padding:11px 0;border-bottom:1px solid #e5eaf0;line-height:1.55}#evidence-lab .ev-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+#evidence-lab .ev-small{font-size:.86rem;color:#536273}#evidence-lab .ev-metric{display:inline-block;padding:8px 10px;margin:4px 6px 4px 0;border-radius:9px;background:#edf3f6}
+#evidence-lab .ev-check{display:flex;align-items:flex-start;gap:9px}.ev-check input{width:auto!important;margin-top:4px}
+@media(max-width:600px){#evidence-lab{padding:17px;margin:22px 12px}}
+</style>
+<section id="evidence-lab">
+<h2>镜头特征基线评估台</h2>
+<p class="ev-note">用真实镜头帧建立人工标注基准，比较一个简单的亮度/边缘阈值基线与人工判断。它不是 AI，也不识别人物身份。图像只在浏览器本地处理；需准备不同场景和光照的样本，不能用少量样本声称模型准确。</p>
+<form id="mirrorBenchForm">
+<div class="ev-grid">
+<label>镜头帧 A<input name="frameA" type="file" accept="image/*" required></label>
+<label>镜头帧 B<input name="frameB" type="file" accept="image/*" required></label>
+<label>人工标注<select name="truth" required><option value="">请选择</option><option value="问题">存在连续性问题</option><option value="正常">未发现问题</option></select></label>
+<label>亮度差阈值（0–1）<input name="brightnessThreshold" type="number" min="0" max="1" step="0.01" value="0.12" required></label>
+<label>边缘密度差阈值（0–1）<input name="edgeThreshold" type="number" min="0" max="1" step="0.01" value="0.10" required></label>
+<label>样本备注（场景/光照/镜头位置）<input name="note" maxlength="240" required></label>
+</div>
+<div class="ev-actions"><button type="submit">计算基线并对照标注</button><button type="button" class="secondary" id="mirrorBenchExport">导出基准记录 JSON</button><button type="button" class="secondary" id="mirrorBenchClear">清空本机记录</button></div>
+</form>
+<div id="mirrorBenchSummary"></div><div id="mirrorBenchRows"></div><canvas id="mirrorBenchCanvas" width="96" height="96" hidden></canvas>
+</section>
+<script>
+(function(){
+ const key="mirror-feature-baseline-benchmark-v1",form=document.getElementById("mirrorBenchForm");
+ const read=()=>{try{return JSON.parse(localStorage.getItem(key)||"[]")}catch(e){return []}};
+ function feature(file){return new Promise((resolve,reject)=>{const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{const c=document.getElementById("mirrorBenchCanvas"),x=c.getContext("2d",{willReadFrequently:true});x.clearRect(0,0,96,96);x.drawImage(img,0,0,96,96);URL.revokeObjectURL(url);const d=x.getImageData(0,0,96,96).data,g=new Float32Array(96*96);let mean=0;for(let i=0;i<g.length;i++){const j=i*4;g[i]=.299*d[j]+.587*d[j+1]+.114*d[j+2];mean+=g[i]/g.length}let edges=0,n=0;for(let y=1;y<95;y++)for(let z=1;z<95;z++){const i=y*96+z,gx=-g[i-97]+g[i-95]-2*g[i-1]+2*g[i+1]-g[i+95]+g[i+97],gy=-g[i-97]-2*g[i-96]-g[i-95]+g[i+95]+2*g[i+96]+g[i+97];if(Math.hypot(gx,gy)>180)edges++;n++}resolve({mean:mean/255,edge:edges/n})};img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error("图像读取失败"))};img.src=url})}
+ function render(){const rows=read(),s=document.getElementById("mirrorBenchSummary"),box=document.getElementById("mirrorBenchRows");box.replaceChildren();if(!rows.length){s.textContent="尚无配对样本。";return}let tp=0,fp=0,tn=0,fn=0;rows.forEach(r=>{if(r.prediction==="问题"&&r.truth==="问题")tp++;else if(r.prediction==="问题")fp++;else if(r.truth==="问题")fn++;else tn++});const precision=tp+fp?Math.round(tp/(tp+fp)*100):0,recall=tp+fn?Math.round(tp/(tp+fn)*100):0;s.replaceChildren();["配对样本 n="+rows.length,"TP "+tp+" · FP "+fp,"TN "+tn+" · FN "+fn,"精确率 "+precision+"%（预测为问题中人工确认比例）","召回率 "+recall+"%（人工问题被检出比例）"].forEach(t=>{const p=document.createElement("span");p.className="ev-metric";p.textContent=t;s.appendChild(p)});rows.slice().reverse().forEach(r=>{const d=document.createElement("div");d.className="ev-row";d.textContent=r.fileA+" ↔ "+r.fileB+" · 人工 "+r.truth+" / 基线 "+r.prediction+" · Δ亮度 "+r.deltaBrightness.toFixed(3)+" · Δ边缘 "+r.deltaEdge.toFixed(3)+" · "+r.note;box.appendChild(d)})}
+ form.addEventListener("submit",async e=>{e.preventDefault();if(!form.reportValidity())return;const b=form.elements,button=form.querySelector('button[type="submit"]');button.disabled=true;button.textContent="正在本地计算…";try{const a=await feature(b.frameA.files[0]),z=await feature(b.frameB.files[0]),db=Math.abs(a.mean-z.mean),de=Math.abs(a.edge-z.edge),prediction=db>=Number(b.brightnessThreshold.value)||de>=Number(b.edgeThreshold.value)?"问题":"正常",rows=read();rows.push({fileA:b.frameA.files[0].name,fileB:b.frameB.files[0].name,truth:b.truth.value,prediction,deltaBrightness:db,deltaEdge:de,brightnessThreshold:Number(b.brightnessThreshold.value),edgeThreshold:Number(b.edgeThreshold.value),note:b.note.value,recordedAt:new Date().toISOString()});localStorage.setItem(key,JSON.stringify(rows));render()}catch(err){alert(err.message)}finally{button.disabled=false;button.textContent="计算基线并对照标注"}});
+ document.getElementById("mirrorBenchExport").onclick=()=>{const rows=read();if(!rows.length){alert("尚无基准记录");return}const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify({notice:"简单视觉特征阈值基线，不是 AI 人物/剧情识别；导出不含图像。请保留人工标注规范和样本授权。",records:rows},null,2)],{type:"application/json"}));a.download="mirror-feature-baseline.json";a.click();URL.revokeObjectURL(a.href)};
+ document.getElementById("mirrorBenchClear").onclick=()=>{if(confirm("清除当前浏览器保存的评估记录？")){localStorage.removeItem(key);render()}};
+ render();
+})();
+</script>
 </body></html>

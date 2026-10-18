@@ -90,4 +90,47 @@ records.push(record);$("deepArchiveStatus").textContent="已加入本页过程�
 $("deepArchiveExport").addEventListener("click",()=>{const payload={project:"声纹织村",disclosure:"文字差异是编辑距离，不代表作者身份或原创度；记录仅在本页内存中。",records,exportedAt:new Date().toISOString()};const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}));a.download="声纹织村-共创过程留痕.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)});
 })();
 </script>
+<style id="jury-evidence-style">
+#evidence-lab{max-width:1120px;margin:38px auto;padding:24px;border:1px solid rgba(100,120,140,.25);border-radius:18px;background:rgba(255,255,255,.94);color:#1e293b;box-shadow:0 14px 40px rgba(25,40,60,.08);font:inherit}
+#evidence-lab h2{margin:0 0 8px;font-size:1.5rem}#evidence-lab h3{margin:22px 0 8px;font-size:1.05rem}
+#evidence-lab p{line-height:1.65}#evidence-lab .ev-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:12px;margin:14px 0}
+#evidence-lab label{display:grid;gap:6px;font-size:.92rem}#evidence-lab input,#evidence-lab textarea,#evidence-lab select{width:100%;box-sizing:border-box;padding:10px 11px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:#172033;font:inherit}
+#evidence-lab textarea{min-height:90px;resize:vertical}#evidence-lab button{border:0;border-radius:9px;padding:10px 14px;background:#143c57;color:#fff;font:inherit;cursor:pointer}
+#evidence-lab button.secondary{background:#e8eef3;color:#143c57}#evidence-lab .ev-note{padding:12px 14px;border-left:3px solid #6c92a9;background:#f2f6f8;border-radius:5px}
+#evidence-lab .ev-row{padding:11px 0;border-bottom:1px solid #e5eaf0;line-height:1.55}#evidence-lab .ev-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+#evidence-lab .ev-small{font-size:.86rem;color:#536273}#evidence-lab .ev-metric{display:inline-block;padding:8px 10px;margin:4px 6px 4px 0;border-radius:9px;background:#edf3f6}
+#evidence-lab .ev-check{display:flex;align-items:flex-start;gap:9px}.ev-check input{width:auto!important;margin-top:4px}
+@media(max-width:600px){#evidence-lab{padding:17px;margin:22px 12px}}
+</style>
+<section id="evidence-lab">
+<h2>真实 AIGC 素材溯源卡</h2>
+<p class="ev-note">在其他工具中完成生成后，可把真实初稿与人工定稿登记在此。上传图像只在当前页面内预览，不会上传服务器；导出文件只含字段和文件名，不包含图像本身。请把授权证明和素材文件另行纳入参赛材料。</p>
+<form id="archiveAigcForm">
+<div class="ev-grid">
+<label>生成工具 / 模型<input name="model" maxlength="100" required placeholder="如工具名称、模型版本；未使用则不要填成已使用"></label>
+<label>初稿图片<input name="draft" type="file" accept="image/*" required></label>
+<label>定稿图片<input name="final" type="file" accept="image/*" required></label>
+<label>关键提示词 / 参数<textarea name="prompt" maxlength="1200" required></textarea></label>
+<label>人工改动说明<textarea name="changes" maxlength="1200" required placeholder="具体写出删改、重绘、构图或叙事决策"></textarea></label>
+<label>来源素材与授权说明<input name="rightsNote" maxlength="500" required></label>
+</div>
+<label class="ev-check"><input name="rights" type="checkbox" required><span>已核实输入素材、人物故事、字体及输出内容的使用权限；如涉及真实口述，另有知情同意记录。</span></label>
+<div id="archivePreviews" class="ev-grid"></div>
+<div class="ev-actions"><button type="submit">登记这一轮生成与改写</button><button type="button" class="secondary" id="archiveAigcExport">导出溯源记录 JSON</button><button type="button" class="secondary" id="archiveAigcClear">清空本机记录</button></div>
+</form>
+<h3>本机溯源记录</h3><div id="archiveAigcRows"></div>
+</section>
+<script>
+(function(){
+ const key="archive-aigc-provenance-v1",form=document.getElementById("archiveAigcForm"),draft=form.elements.draft,finalFile=form.elements.final,previews=document.getElementById("archivePreviews");
+ function preview(input,label){input.addEventListener("change",()=>{const f=input.files&&input.files[0];if(!f)return;let box=document.getElementById("preview-"+label);if(!box){box=document.createElement("div");box.id="preview-"+label;box.className="ev-row";previews.appendChild(box)}box.replaceChildren();const im=document.createElement("img");im.alt=label+"本地预览";im.src=URL.createObjectURL(f);im.style.maxWidth="100%";im.style.maxHeight="240px";const cap=document.createElement("div");cap.textContent=label+"："+f.name;box.append(im,cap)})}
+ preview(draft,"AI初稿");preview(finalFile,"人工定稿");
+ const read=()=>{try{return JSON.parse(localStorage.getItem(key)||"[]")}catch(e){return []}};
+ function render(){const box=document.getElementById("archiveAigcRows");box.replaceChildren();const rows=read();if(!rows.length){box.textContent="尚无溯源记录。";return}rows.slice().reverse().forEach(r=>{const d=document.createElement("div");d.className="ev-row";d.textContent=r.model+" · 初稿 "+r.draftFile+" → 定稿 "+r.finalFile+" · 改动："+r.changes+" · "+r.recordedAt;box.appendChild(d)})}
+ form.addEventListener("submit",e=>{e.preventDefault();if(!form.reportValidity())return;const x=Object.fromEntries(new FormData(form)),rows=read();rows.push({model:x.model,prompt:x.prompt,changes:x.changes,rightsNote:x.rightsNote,draftFile:draft.files[0].name,finalFile:finalFile.files[0].name,rightsConfirmed:true,recordedAt:new Date().toISOString()});localStorage.setItem(key,JSON.stringify(rows));form.reset();previews.replaceChildren();render()});
+ document.getElementById("archiveAigcExport").onclick=()=>{const rows=read();if(!rows.length){alert("尚无记录可导出");return}const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify({notice:"导出仅包含溯源字段，不包含原图或授权文件。请勿将文件名当作授权证明。",records:rows},null,2)],{type:"application/json"}));a.download="archive-aigc-provenance.json";a.click();URL.revokeObjectURL(a.href)};
+ document.getElementById("archiveAigcClear").onclick=()=>{if(confirm("清除当前浏览器保存的溯源记录？")){localStorage.removeItem(key);render()}};
+ render();
+})();
+</script>
 </body></html>

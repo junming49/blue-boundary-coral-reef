@@ -94,4 +94,42 @@ $("deepIceRun").addEventListener("click",run);floor.addEventListener("input",run
 $("deepIceExport").addEventListener("click",()=>{if(!latest)run();const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(latest,null,2)],{type:"application/json"}));a.download="冰芯来信-安全阈值敏感性.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)});run()
 })();
 </script>
+<style id="jury-evidence-style">
+#evidence-lab{max-width:1120px;margin:38px auto;padding:24px;border:1px solid rgba(100,120,140,.25);border-radius:18px;background:rgba(255,255,255,.94);color:#1e293b;box-shadow:0 14px 40px rgba(25,40,60,.08);font:inherit}
+#evidence-lab h2{margin:0 0 8px;font-size:1.5rem}#evidence-lab h3{margin:22px 0 8px;font-size:1.05rem}
+#evidence-lab p{line-height:1.65}#evidence-lab .ev-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:12px;margin:14px 0}
+#evidence-lab label{display:grid;gap:6px;font-size:.92rem}#evidence-lab input,#evidence-lab textarea,#evidence-lab select{width:100%;box-sizing:border-box;padding:10px 11px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:#172033;font:inherit}
+#evidence-lab textarea{min-height:90px;resize:vertical}#evidence-lab button{border:0;border-radius:9px;padding:10px 14px;background:#143c57;color:#fff;font:inherit;cursor:pointer}
+#evidence-lab button.secondary{background:#e8eef3;color:#143c57}#evidence-lab .ev-note{padding:12px 14px;border-left:3px solid #6c92a9;background:#f2f6f8;border-radius:5px}
+#evidence-lab .ev-row{padding:11px 0;border-bottom:1px solid #e5eaf0;line-height:1.55}#evidence-lab .ev-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+#evidence-lab .ev-small{font-size:.86rem;color:#536273}#evidence-lab .ev-metric{display:inline-block;padding:8px 10px;margin:4px 6px 4px 0;border-radius:9px;background:#edf3f6}
+#evidence-lab .ev-check{display:flex;align-items:flex-start;gap:9px}.ev-check input{width:auto!important;margin-top:4px}
+@media(max-width:600px){#evidence-lab{padding:17px;margin:22px 12px}}
+</style>
+<section id="evidence-lab">
+<h2>情境规则审校簿</h2>
+<p class="ev-note">把每条影响资源变化或结局的规则交给领域人员核查。页面现有数值仍是虚构情境参数；这里的登记不代表已经获得专家认可，也不构成极地安全建议。</p>
+<form id="iceReviewForm">
+<div class="ev-grid">
+<label>待核查规则<select name="rule" required><option value="">请选择</option><option>风暴期间供电与设备风险</option><option>冰芯复测与冷却剂消耗</option><option>通信窗口与信息优先级</option><option>人员安全状态变化</option><option>27条路径的筛选阈值</option><option>其他情境规则</option></select></label>
+<label>审校角色（不填姓名）<input name="role" maxlength="60" required placeholder="如：极地科研 / 安全工程"></label>
+<label>依据来源或文献链接<input name="source" maxlength="240" required></label>
+<label>核查状态<select name="status" required><option value="待核实">待核实</option><option value="支持当前设定">支持当前设定</option><option value="建议修改">建议修改</option><option value="不适用">不适用</option></select></label>
+</div>
+<label>审校意见与适用边界<textarea name="note" maxlength="1200" required placeholder="写明依据、假设、需要修改的参数，以及不能外推的范围"></textarea></label>
+<div class="ev-actions"><button type="submit">记录一次审校</button><button type="button" class="secondary" id="iceReviewExport">导出审校 JSON</button><button type="button" class="secondary" id="iceReviewClear">清空本机记录</button></div>
+</form>
+<h3>规则证据账本</h3><div id="iceReviewSummary" class="ev-small">尚无审校记录。</div><div id="iceReviewRows"></div>
+</section>
+<script>
+(function(){
+ const key="ice-rule-review-v1",form=document.getElementById("iceReviewForm");
+ const read=()=>{try{return JSON.parse(localStorage.getItem(key)||"[]")}catch(e){return []}};
+ function render(){const rows=read(),box=document.getElementById("iceReviewRows"),sum=document.getElementById("iceReviewSummary");box.replaceChildren();sum.textContent=rows.length+" 条登记；“支持当前设定”仅代表记录的审校意见，正式报告仍需保留可核验附件。";if(!rows.length)sum.textContent="尚无审校记录。";rows.slice().reverse().forEach(r=>{const d=document.createElement("div");d.className="ev-row";d.textContent=r.rule+" · "+r.status+" · "+r.role+" · 依据："+r.source+" · "+r.note;box.appendChild(d)})}
+ form.addEventListener("submit",e=>{e.preventDefault();if(!form.reportValidity())return;const r=JSON.parse(localStorage.getItem(key)||"[]");const x=Object.fromEntries(new FormData(form));r.push({...x,recordedAt:new Date().toISOString()});localStorage.setItem(key,JSON.stringify(r));form.reset();render()});
+ document.getElementById("iceReviewExport").onclick=()=>{const rows=read();if(!rows.length){alert("尚无记录可导出");return}const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify({notice:"团队登记的情境规则审校记录；请另附专家意见原件。",records:rows},null,2)],{type:"application/json"}));a.download="ice-rule-review.json";a.click();URL.revokeObjectURL(a.href)};
+ document.getElementById("iceReviewClear").onclick=()=>{if(confirm("清除当前浏览器保存的审校记录？")){localStorage.removeItem(key);render()}};
+ render();
+})();
+</script>
 </body></html>
