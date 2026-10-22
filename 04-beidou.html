@@ -1,0 +1,1561 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>北斗·归途｜一束信号，走出风暴 · 作品编号 400430</title>
+<style>
+/* ===== 设计变量：叙事用暖琥珀，真实系统知识用冷蓝，二者分色分区 ===== */
+:root{
+  --bg:#111821; --panel:#182330; --panel2:#1e2c39; --line:#3f4c58;
+  --ink:#f2f0e8; --muted:#b3bfc3; --faint:#8b979d;
+  --amber:#f2c76e; --red:#ef8e73; --know:#9ad3ef; --green:#8fd6a8;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(150deg,#17222c,#11171e 55%,#201e1a 100%);color:var(--ink);
+  font:15px/1.65 "Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:auto;padding:0 22px}
+
+/* ===== 顶栏 ===== */
+.top{position:sticky;top:0;z-index:40;height:62px;display:flex;justify-content:space-between;align-items:center;gap:10px;
+  border-bottom:1px solid #ffffff1f;background:#111821e8;backdrop-filter:blur(6px)}
+.brand{color:var(--amber);font-weight:700;letter-spacing:.16em;text-decoration:none;font-size:13px;white-space:nowrap}
+.topnav{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.ghostbtn{background:#ffffff0d;border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:8px 13px;
+  font-size:12.5px;cursor:pointer;font-family:inherit;text-decoration:none}
+.ghostbtn:hover{background:#ffffff18}
+.ghostbtn[aria-pressed="true"]{border-color:var(--amber);color:var(--amber);background:#f2c76e14}
+.langsw{display:flex;gap:0;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.langsw button{background:#ffffff08;border:0;color:var(--muted);padding:8px 11px;font-size:12.5px;cursor:pointer;font-family:inherit}
+.langsw button+button{border-left:1px solid var(--line)}
+.langsw button[aria-pressed="true"]{background:#f2c76e1c;color:var(--amber)}
+*:focus-visible{outline:2px solid var(--amber);outline-offset:2px;border-radius:6px}
+
+/* ===== 首屏 ===== */
+.hero{padding:34px 0 14px}
+.k{font:11px ui-monospace,monospace;color:var(--amber);letter-spacing:.2em}
+h1{font-size:clamp(30px,4.6vw,50px);line-height:1.1;margin:10px 0 12px;letter-spacing:-.01em}
+.lede{max-width:74ch;color:var(--muted);margin:0;font-size:16px;line-height:1.85}
+
+/* ===== 价值导向提示条 ===== */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0;padding:0;list-style:none}
+.chips li{font-size:12.5px;color:#cfe3ee;background:#9ad3ef14;border:1px solid #9ad3ef33;
+  border-radius:999px;padding:6px 12px}
+.chips li.warn{color:#ffd9c9;background:#ef8e7314;border-color:#ef8e7340}
+
+/* ===== 主体栅格 ===== */
+.layout{display:grid;grid-template-columns:1.16fr .84fr;gap:16px;padding:16px 0 56px;align-items:start}
+.panel{border:1px solid var(--line);border-radius:16px;background:var(--panel);overflow:hidden}
+.panelhead{padding:13px 17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;
+  align-items:center;gap:10px;font-size:12px;letter-spacing:.04em}
+.panelhead b{font-size:13.5px;font-weight:600}
+.tag{font:10.5px ui-monospace,monospace;color:var(--faint);letter-spacing:.14em}
+.pad{padding:16px 17px}
+
+/* ===== 场景插画（CSS/SVG 程序绘制，无图片素材） ===== */
+.illus{position:relative;border-bottom:1px solid var(--line);background:#0b1117;overflow:hidden}
+.illus svg{display:block;width:100%;height:auto}
+.illus .cap{position:absolute;left:11px;bottom:9px;font:10.5px ui-monospace,monospace;color:#d3dee2;
+  background:#0a0f14cc;border:1px solid #ffffff1f;border-radius:6px;padding:3px 8px;letter-spacing:.06em}
+@keyframes rainFall{from{transform:translateY(-46px)}to{transform:translateY(46px)}}
+@keyframes mistDrift{from{transform:translateX(-14px)}to{transform:translateX(14px)}}
+@keyframes softPulse{0%,100%{opacity:.25}50%{opacity:.9}}
+@keyframes slowScan{from{transform:translateY(0)}to{transform:translateY(-18px)}}
+.rain{animation:rainFall 1.15s linear infinite}
+.rain.slow{animation-duration:2.3s}
+.mist{animation:mistDrift 11s ease-in-out infinite alternate}
+.pulse{animation:softPulse 2.8s ease-in-out infinite}
+.scan{animation:slowScan 6s ease-in-out infinite alternate}
+
+/* ===== 情境地图（示意，非真实坐标） ===== */
+.mapstage{height:210px;position:relative;background:radial-gradient(ellipse at 42% 60%,#44564f,#263a3e 48%,#17232d 76%);overflow:hidden}
+.mapstage:before{content:"";position:absolute;inset:-25%;
+  background:repeating-linear-gradient(25deg,transparent 0 34px,#dbe5d012 35px 36px),
+             repeating-linear-gradient(112deg,transparent 0 48px,#e6e5c90d 49px 50px);transform:rotate(-12deg)}
+.mount{position:absolute;bottom:0;left:-6%;width:72%;height:56%;
+  background:linear-gradient(145deg,#82785a,#384844);
+  clip-path:polygon(0 100%,0 62%,19% 48%,30% 12%,40% 54%,52% 32%,73% 57%,82% 40%,100% 65%,100% 100%)}
+.mount.two{left:38%;width:82%;height:48%;background:linear-gradient(145deg,#6e705c,#293b40);opacity:.82}
+.routeLine{position:absolute;left:14%;top:56%;width:70%;height:40%;border:3px dashed var(--amber);
+  border-left:0;border-bottom:0;border-radius:0 35% 0 0;transform:rotate(-10deg);filter:drop-shadow(0 0 6px #f2c76e70);
+  transition:width .45s ease}
+.point{position:absolute;width:11px;height:11px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 4px #f2c76e26}
+.p1{left:16%;top:88%}.p2{left:47%;top:60%}.p3{left:78%;top:34%}
+.maplabel{position:absolute;font-size:11px;color:#d9e6e2;background:#0f1620b8;border:1px solid #ffffff1f;
+  border-radius:6px;padding:2px 7px;white-space:nowrap}
+.l1{left:6%;bottom:8px}.l2{left:42%;top:54%}.l3{right:5%;top:26%}
+.mapfoot{padding:10px 17px;border-top:1px solid var(--line);font-size:11.5px;color:var(--faint)}
+
+/* ===== 资源仪表 ===== */
+.res{display:flex;flex-direction:column;gap:13px}
+.resrow .lab{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin-bottom:5px}
+.resrow .lab b{color:var(--ink);font-family:ui-monospace,monospace}
+.bar{height:7px;border-radius:99px;background:#ffffff12;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--amber);transition:width .4s ease}
+.bar.time i{background:var(--red)}.bar.clue i{background:var(--know)}
+.reshint{font-size:11.5px;color:var(--faint);margin:10px 0 0}
+
+/* ===== 事实卡（真实系统知识 · 冷蓝区） ===== */
+.know{border-left:3px solid var(--know)}
+.knowhead{background:#9ad3ef10;border-bottom:1px solid #9ad3ef26}
+.badge{display:inline-block;font:10px ui-monospace,monospace;letter-spacing:.1em;padding:3px 7px;border-radius:5px;white-space:nowrap}
+.badge.know{background:#9ad3ef1f;color:var(--know);border:1px solid #9ad3ef40}
+.badge.fic{background:#f2c76e1a;color:var(--amber);border:1px solid #f2c76e40}
+.factgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.factbtn{text-align:left;background:#ffffff08;border:1px solid #ffffff14;border-radius:10px;padding:9px 11px;
+  color:var(--ink);font-family:inherit;font-size:12.5px;cursor:pointer;line-height:1.4}
+.factbtn:hover{background:#ffffff14}
+.factbtn[aria-pressed="true"]{border-color:var(--know);background:#9ad3ef16}
+.factbtn small{display:block;color:var(--faint);font-size:10.5px;margin-top:2px}
+.factview{margin-top:12px;border:1px solid #9ad3ef30;border-radius:11px;background:#9ad3ef0b;padding:13px 14px}
+.factview h4{margin:0 0 6px;font-size:14px;color:var(--know)}
+.factview p{margin:0 0 8px;font-size:13px;line-height:1.75;color:#dbe8ee}
+.factview .caution{color:#ffd9c9;font-size:12.5px}
+.factview a{color:var(--know)}
+.pending{font-size:11.5px;color:var(--amber);background:#f2c76e12;border:1px dashed #f2c76e45;border-radius:7px;
+  padding:6px 9px;margin-top:8px}
+
+/* ===== 事实核对表 ===== */
+.ckrow{border-top:1px dashed #ffffff18;padding:11px 0}
+.ckrow:first-child{border-top:0;padding-top:0}
+.cktop{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.cktop b{font:12px ui-monospace,monospace;color:var(--know)}
+.ckrow dl{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;margin:0}
+.ckrow dt{font-size:11px;color:var(--faint);white-space:nowrap;font-family:ui-monospace,monospace;padding-top:2px}
+.ckrow dd{margin:0;font-size:12.5px;line-height:1.65;color:var(--muted)}
+.ckrow dd a{color:var(--know)}
+.ckfoot{font-size:11.5px;color:var(--faint);line-height:1.7;margin:11px 0 0;border-top:1px solid #ffffff12;padding-top:9px}
+
+/* ===== 叙事主体 ===== */
+.story{border-left:3px solid var(--amber)}
+.storyhead{background:#f2c76e0e;border-bottom:1px solid #f2c76e22}
+.acts{display:flex;gap:6px}
+.acts i{width:26px;height:3px;border-radius:9px;background:#ffffff20}
+.acts i.on{background:var(--amber)}
+.storybody{padding:20px 19px 22px}
+.situation{font-size:11.5px;color:var(--amber);letter-spacing:.05em;margin-bottom:14px}
+.storytitle{font-size:clamp(20px,2.4vw,26px);line-height:1.35;margin:0 0 14px}
+.narrative{max-width:64ch}
+.narrative p{margin:0 0 .95em;font-size:16.5px;line-height:1.92;color:#e6ecea}
+.narrative p:first-child{font-size:17.5px;color:#f4f7f5}
+.narrative p.side{font-size:13px;line-height:1.8;color:var(--faint);border-left:2px solid #ffffff1c;padding-left:11px}
+
+.choices{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.choice{display:block;width:100%;text-align:left;background:#ffffff0a;border:1px solid var(--line);
+  border-radius:12px;padding:13px 15px;color:var(--ink);font-family:inherit;cursor:pointer;transition:.18s}
+.choice:hover{background:#ffffff16;border-color:var(--amber)}
+.choice .ct{font-size:15px;line-height:1.6}
+.choice .cmeta{display:block;font-size:12px;color:var(--muted);margin-top:5px;line-height:1.6}
+.choice .cres{display:block;font-family:ui-monospace,monospace;font-size:11.5px;color:var(--amber);margin-top:5px}
+.choice.locked{opacity:.62;border-style:dashed;cursor:not-allowed}
+.choice.locked .cres{color:var(--red)}
+.choice.locked:hover{background:#ffffff0a;border-color:var(--line)}
+.plink{display:block;margin-top:7px;font-size:12px;color:var(--know);background:none;border:0;padding:0;
+  cursor:pointer;font-family:inherit;text-align:left}
+
+/* 结局 */
+.ending{border:1px solid #f2c76e40;border-radius:13px;background:#f2c76e0d;padding:16px 17px;margin-top:4px}
+.ending h3{margin:0 0 8px;font-size:18px;color:var(--amber)}
+.ending p{margin:0 0 .8em;font-size:15.5px;line-height:1.9}
+.why{margin:10px 0 0;padding-left:18px;font-size:13.5px;color:var(--muted);line-height:1.8}
+.why b{color:var(--ink);font-weight:600}
+
+/* ===== 决策回放 ===== */
+.replay ol{margin:0;padding-left:20px}
+.replay li{padding:9px 0;border-bottom:1px dashed #ffffff14;opacity:.24;transition:opacity .3s}
+.replay li.on,.replay li.shown{opacity:1}
+.replay .rnum{font:11px ui-monospace,monospace;color:var(--amber)}
+.replay .rdelta{font:11.5px ui-monospace,monospace;color:var(--red)}
+.replay .rimp{display:block;font-size:12.5px;color:var(--muted);margin-top:3px}
+.replay .empty{color:var(--faint);font-size:13px}
+
+/* ===== 操作区 / 脚注 ===== */
+.row{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+.btn{background:var(--amber);color:#1a1408;border:0;border-radius:9px;padding:9px 15px;font-size:13px;
+  font-weight:600;cursor:pointer;font-family:inherit}
+.btn.sec{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn:hover:not(:disabled){filter:brightness(1.08)}
+.foot{margin:14px 0 0;font-size:12.5px;color:var(--faint);min-height:1.4em}
+.disclaim{margin:12px 0 0;font-size:11.5px;color:var(--faint);line-height:1.75;border-top:1px solid #ffffff12;padding-top:11px}
+.storymeta{font:11px ui-monospace,monospace;color:var(--faint);letter-spacing:.12em}
+.soundnote{margin:9px 0 0;font-size:11px;color:var(--faint);line-height:1.7}
+
+/* ===== 作品说明抽屉 ===== */
+.overlay{position:fixed;inset:0;background:#050a0fb3;opacity:0;pointer-events:none;transition:opacity .25s;z-index:60}
+.overlay.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(580px,92vw);background:#131d27;
+  border-left:1px solid var(--line);transform:translateX(102%);transition:transform .3s ease;z-index:61;
+  display:flex;flex-direction:column}
+.drawer.on{transform:none}
+.drawerhead{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.drawerhead h2{margin:0;font-size:17px}
+.drawerbody{overflow:auto;padding:6px 20px 40px}
+.drawerbody section{padding:16px 0;border-bottom:1px dashed #ffffff16}
+.drawerbody section:last-child{border-bottom:0}
+.drawerbody h3{margin:0 0 8px;font-size:14.5px;color:var(--amber)}
+.drawerbody p,.drawerbody li{font-size:13.5px;line-height:1.85;color:var(--muted)}
+.drawerbody ul{margin:0;padding-left:18px}
+.drawerbody li{margin-bottom:4px}
+.drawerbody strong{color:var(--ink)}
+.drawerbody code{font:12px ui-monospace,monospace;color:#cfd9dd}
+.pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:99px;margin-right:6px}
+.pill.ok{background:#8fd6a81c;color:var(--green);border:1px solid #8fd6a844}
+.pill.todo{background:#f2c76e18;color:var(--amber);border:1px solid #f2c76e45}
+.ver{font:11.5px ui-monospace,monospace;color:var(--know)}
+
+@media(max-width:940px){
+  .layout{grid-template-columns:1fr}
+  .wrap{padding:0 15px}
+  .factgrid{grid-template-columns:1fr}
+  .narrative p{font-size:16px}
+}
+@media(max-width:620px){
+  .top{height:auto;min-height:62px;padding:9px 0;align-items:flex-start}
+  .brand{font-size:11.5px}
+  .mapstage{height:180px}
+  .ckrow dl{grid-template-columns:1fr}
+  .ckrow dt{padding-top:4px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <a class="brand" href="index.html" title="← 返回作品目录">FIELD / 04 · BEIDOU</a>
+  <nav class="topnav">
+    <button class="ghostbtn" id="soundBtn" aria-pressed="false">音效：关</button>
+    <div class="langsw" role="group" aria-label="语言切换 / Language">
+      <button id="langZh" aria-pressed="true">中文</button><button id="langEn" aria-pressed="false">EN</button>
+    </div>
+    <button class="ghostbtn" id="openDrawer" aria-haspopup="dialog" aria-controls="drawer">作品说明</button>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="k" id="heroK">CHINA STORY · BRANCHING INTERACTIVE NARRATIVE · FICTIONAL SCENARIO</div>
+  <h1 id="heroTitle">北斗·归途：一束信号，走出风暴</h1>
+  <p class="lede" id="lede"></p>
+  <ul class="chips" id="chips"></ul>
+</section>
+
+<main class="layout">
+  <!-- 主叙事列 -->
+  <section class="panel story">
+    <div class="panelhead storyhead">
+      <b><span class="badge fic" id="badgeFic">虚构情节</span> <span id="storyHeadText">互动叙事 · 四幕分支</span></b>
+      <span class="acts" id="acts" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></span>
+    </div>
+    <!-- 程序绘制场景插画 -->
+    <div class="illus"><div id="illus"></div><span class="cap" id="cap"></span></div>
+    <div class="storybody">
+      <div class="storymeta" id="stepmeta"></div>
+      <div class="situation" id="situation"></div>
+      <h2 class="storytitle" id="title"></h2>
+      <div class="narrative" id="text" aria-live="polite"></div>
+      <div class="choices" id="choices"></div>
+      <div class="row">
+        <button class="btn" id="restart">重新体验</button>
+        <button class="btn sec" id="export">导出 beidou-choices.json</button>
+      </div>
+      <p class="foot" id="status" aria-live="polite"></p>
+      <p class="soundnote" id="soundNote"></p>
+      <p class="disclaim" id="disclaim"></p>
+    </div>
+  </section>
+
+  <!-- 侧栏：地图 / 资源 / 事实卡 / 核对表 / 回放 -->
+  <aside style="display:flex;flex-direction:column;gap:16px">
+    <section class="panel">
+      <div class="panelhead"><b id="mapHead">雾岭 · 示意地形图</b><span class="tag">FICTIONAL SCENARIO</span></div>
+      <div class="mapstage">
+        <div class="mount"></div><div class="mount two"></div>
+        <div class="routeLine" id="line"></div>
+        <i class="point p1"></i><i class="point p2"></i><i class="point p3"></i>
+        <span class="maplabel l1" id="lab1">临时集合点</span>
+        <span class="maplabel l2" id="lab2">山口信号盲区</span>
+        <span class="maplabel l3" id="lab3">村卫生站</span>
+      </div>
+      <div class="mapfoot" id="mapFoot"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panelhead"><b id="resHead">资源面板</b><span class="tag">RESOURCE MODEL</span></div>
+      <div class="pad">
+        <div class="res">
+          <div class="resrow"><div class="lab"><span id="labPower">电量（终端可用余量）</span><b id="vPower">100%</b></div>
+            <div class="bar" role="progressbar" aria-label="电量" aria-valuemin="0" aria-valuemax="100"><i id="bPower" style="width:100%"></i></div></div>
+          <div class="resrow"><div class="lab"><span id="labTime">时间（处置窗口，1 刻 = 15 分钟）</span><b id="vTime">12 刻</b></div>
+            <div class="bar time" role="progressbar" aria-label="处置窗口" aria-valuemin="0" aria-valuemax="12"><i id="bTime" style="width:100%"></i></div></div>
+          <div class="resrow"><div class="lab"><span id="labClue">核验线索（已完成交叉核对的信息）</span><b id="vClue">0 条</b></div>
+            <div class="bar clue" role="progressbar" aria-label="核验线索" aria-valuemin="0" aria-valuemax="8"><i id="bClue" style="width:0%"></i></div></div>
+        </div>
+        <p class="reshint" id="resHint"></p>
+      </div>
+    </section>
+
+    <section class="panel know">
+      <div class="panelhead knowhead"><b><span class="badge know" id="badgeKnow">真实系统知识</span></b><span class="tag">FACT CARDS</span></div>
+      <div class="pad">
+        <div class="factgrid" id="factGrid"></div>
+        <div class="factview" id="factView" aria-live="polite">
+          <h4 id="factViewTitle">北斗事实卡</h4>
+          <p id="factViewHint"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panelhead"><b id="veriHead">事实核对表</b><span class="tag">SOURCE CHECK</span></div>
+      <div class="pad">
+        <div id="veriBody"></div>
+        <p class="ckfoot" id="veriFoot"></p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panelhead"><b id="playHead">决策回放</b><span class="tag">PLAYBACK</span></div>
+      <div class="pad replay">
+        <ol id="replayList"></ol>
+        <div class="row">
+          <button class="btn" id="pbStep">播放下一步</button>
+          <button class="btn sec" id="pbAuto">自动播放</button>
+          <button class="btn sec" id="pbAll">全部展开</button>
+          <button class="btn sec" id="pbReset">重置回放</button>
+        </div>
+      </div>
+    </section>
+  </aside>
+</main>
+</div>
+
+<!-- 作品说明抽屉 -->
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true">
+  <div class="drawerhead"><h2 id="drawerTitle">作品说明</h2><button class="ghostbtn" id="closeDrawer">关闭 (Esc)</button></div>
+  <div class="drawerbody" id="drawerBody"></div>
+</aside>
+
+<script>
+/* ==========================================================
+   0 · 数据来源（仅使用官方站点栏目页，未杜撰新域名）
+   ========================================================== */
+const SRC = {
+  intro:  {url:'https://www.csno-tarc.cn/status/introduction', name:'中国卫星导航系统管理办公室测试评估研究中心 · 北斗系统介绍'},
+  portal: {url:'https://www.beidou.gov.cn/', name:'北斗卫星导航系统官方网站'}
+};
+
+/* ==========================================================
+   1 · 字典：zh / en。界面、剧情、事实卡、结局、抽屉全部双语
+   ========================================================== */
+const T = {
+
+/* ---------------------------------------------------------- 中文 */
+zh:{
+  htmlLang:'zh-CN', docTitle:'北斗·归途｜一束信号，走出风暴',
+  meta:{
+    heroK:'CHINA STORY · BRANCHING INTERACTIVE NARRATIVE · FICTIONAL SCENARIO',
+    title:'北斗·归途：一束信号，走出风暴',
+    lede:'这是一件以〈中国科技创新故事〉为选题的互动叙事原型。故事中的暴雨、山地、人物与事件全部虚构；作品中另行辟出的蓝色区域，是北斗卫星导航系统的公开知识，并逐条标注了出处与未引用项。你将在四幕里做选择，每步都要付出资源，选择会累积成不同的结局。',
+    chips:['定位信息不等于道路安全','技术信号需要被理解和协同使用','本故事不构成救援指导']
+  },
+  src:{
+    intro:'中国卫星导航系统管理办公室测试评估研究中心 · 北斗系统介绍',
+    portal:'北斗卫星导航系统官方网站'
+  },
+  ui:{
+    openDrawer:'作品说明', closeDrawer:'关闭 (Esc)', drawerTitle:'作品说明',
+    soundOn:'音效：开', soundOff:'音效：关',
+    soundNote:'音效为程序生成、无第三方素材：环境音（雨 / 风）由浏览器 Web Audio 实时合成，不含任何采样或音乐；默认关闭，点击右上开关才会启动。',
+    audioInit:'环境音已开启（实时合成，音量较低）。', audioEnd:'环境音已关闭。',
+    audioFail:'当前浏览器不支持 Web Audio，无法生成环境音。',
+    badgeFic:'虚构情节', badgeKnow:'真实系统知识', storyHead:'互动叙事 · 四幕分支',
+    mapHead:'雾岭 · 示意地形图', mapFoot:'路径与地形为故事示意，无真实坐标，不具备定位或指挥功能。',
+    lab1:'临时集合点', lab2:'山口信号盲区', lab3:'村卫生站', lab2alt:'余电告警区',
+    resHead:'资源面板', labPower:'电量（终端可用余量）', labTime:'时间（处置窗口，1 刻 = 15 分钟）',
+    labClue:'核验线索（已完成交叉核对的信息）', resHint:'资源不足时，部分选项会被锁定，按钮上会直接说明原因。',
+    factViewTitle:'北斗事实卡',
+    factViewHint:'点击上方任意一张卡片查看内容与出处。此区域与剧情严格分离，标注“未引用”的细项因未取得官方逐条原文，本作品不予引用。',
+    srcLabel:'官方来源：', pendingLabel:'未引用：',
+    playHead:'决策回放', playEmpty:'还没有选择。完成一次选择后，这里会逐步累积你的决策链。',
+    pbStep:'播放下一步', pbAuto:'自动播放', pbStop:'停止播放', pbAll:'全部展开', pbReset:'重置回放',
+    btnRestart:'重新体验', btnExport:'导出 beidou-choices.json',
+    stepMeta:(o)=>'第 '+o.n+' / 4 幕 · '+o.acts,
+    actWord:'幕', cost:'代价 / 收益：', noCost:'无消耗', effect:'跨幕影响：', locked:'不可用：',
+    endingHead:'四幕完成 · 结局复盘', endingSit:'虚构结局 · 由资源余量与线索完整度共同决定',
+    endingWhy:'这个结局由哪些选择造成',
+    endingFoot:'虚构结局，不构成应急救援指导。以上因果链可用于课堂/社群复盘。',
+    restartDone:'新一轮已开始，资源与剧情状态全部重置。',
+    exportDone:'已导出 beidou-choices.json（选择序列 / 资源变化 / 结局归因 / 事实卡查看记录 / 语言）。',
+    lockedToast:(o)=>'该选项不可用：'+o.r, chosenNote:'已记录本次选择。',
+    langDone:(o)=>'界面语言已切换为'+o.name+'。',
+    units:{power:'电量', time:'时间', clue:'线索'}, sfx:{power:'%', time:' 刻', clue:' 条'},
+    veriHead:'事实核对表', ckPoint:'表述要点', ckSrc:'官方来源', ckStatus:'核对状态', ckNote:'备注',
+    st_primary:'已比对（主干表述）', st_pending:'未引用',
+    veriFoot:'核对状态由团队依据上述官方页面自行标注；标注“未引用”的细项不作为引用依据。',
+    illusAlt:'程序绘制场景插画（SVG/CSS，无图片素材）',
+    illusCap:['01 雨夜山地 · 预警','02 进山路口 · 缺口','03 失联山脊 · 链路降级','04 协同行动 · 回执']
+  },
+  rf:{
+    back:'处置窗口不足：返回村委至少需要 4 刻',
+    sms:'电量不足：格式化报文与等待回执至少需要 25% 电量',
+    listen:'第一幕没有约定守听时隙，此刻守听无法与任何一方对上',
+    hold:'电量不足：保持联络至少需要 8% 电量',
+    push:'电量或处置窗口不足，强行推进无法维持联络',
+    relay:'电量不足：发出完整状态报文至少需要 30% 电量'
+  },
+  scene:{
+    1:{ title:'暴雨预警传来时，先确认什么',
+        situation:'虚构情境 · 汛期午后 16:00 · 雾岭村委办公室外',
+        paras:{
+          a:'汛期的雾岭，下午四点的雨线已经压到山脊以下。气象部门的暴雨预警刚刚转到村委，广播里反复播着同一句提醒：通往上坳的两条村道，至少一个岔口会在两小时内漫水。',
+          b:'队伍四人：队长周航、通信员叶桉、志愿者林舟，以及必须在天黑前赶到上坳卫生站送药的村医助理许迟。你手上有具备北斗短报文能力的终端、两块备用电池，还有一个尚未被确认的联络计划。',
+          c:'先确认什么，决定了整支队伍两小时后的处境。'
+        },
+        choice:{
+          plan:{text:'先花时间核对联络计划：约定守听时隙、备用电源与集合点',
+                note:'形成第一份可核对的联络约定',
+                impact:'为第三幕的低耗电方案「按约定时隙守听」打开通道'},
+          rush:{text:'抢在雨势变大前立刻出发，边走边看水情',
+                note:'省下时间，但没有留下任何联络约定',
+                impact:'第三幕无法使用守听方案，且后续再无补充约定机会'},
+          road:{text:'先到村委核对道路台账与上游水情',
+                note:'多花时间，换来道路与水源的书面信息',
+                impact:'第二幕解锁「绕行东侧便道」这一已核验路线'}
+        }},
+    2:{ title:'缺口横在岔路上',
+        situation:'虚构情境 · 16:50 · 进山机耕道中段',
+        paras:{
+          a:'山洪从机耕道中段冲开一道约两米宽的缺口，浑浊的水正漫向低处的竹林。经验告诉你：看着浅的水，底下可能是被掏空的路面。',
+          r:'出发得太急，备用电池忘在村委桌上，口袋里只剩终端本身剩余的那点电——这是「抢时间」留下的账单。',
+          p:'防水笔记本第一页写着出发前约定的守听时隙：二十分钟一轮，错过就得再等一轮。',
+          rd:'村委老人说的东侧便道就在前方：早年修水渠留下的旧路，比机耕道高出半米——这是你用三刻钟换来的信息。',
+          ni:'你手上的位置信息来自地图与经验，没有任何一条来自今天的现场核验。'
+        },
+        choice:{
+          avoid:{text:'绕行东侧便道，远但有过台账依据',
+                 note:'走已核验路线，并补一次现场观察',
+                 impact:'形成第二条可交叉核对的路线情报'},
+          back:{text:'退回村委核对台账后再次进山',
+                note:'代价高，但换到一份书面路况',
+                impact:'补上第一幕缺失的道路信息'},
+          mark:{text:'不急于通过，先用终端定位标点并把缺口位置上报表',
+                note:'把“位置”变成“可被别人引用的位置”',
+                impact:'第四幕可把这条记录整理成交接清单'},
+          wade:{text:'凭经验直接试探通过缺口',
+                note:'最快，但没有产生任何可核验信息',
+                impact:'冒进计数 +1，直接影响结局判定'}
+        }},
+    3:{ title:'雨声压下来，公网断了',
+        situation:'虚构情境 · 18:10 · 山口背风侧',
+        paras:{
+          a:'雨声盖过喊话，公网信号彻底断了。两人在坡这边，两人在坡那边，谁也不知道对方脚下是不是同一条路。',
+          p:'还好出发前约定过守听时隙——二十分钟一轮，错过这一轮就要再等二十分钟。',
+          r:'出发前没留下任何联络约定，现在只能靠反复拨号碰运气。',
+          k:'刚才蹚水时摔了一跤，终端外壳进了水汽，电量掉得比预想快得多。'
+        },
+        choice:{
+          sms:{text:'用具备卫星短报文能力的终端，向指挥点发送格式化位置与状态报文',
+               note:'把“我在哪、我什么状态”说清楚',
+               impact:'第四幕将收到回执，协同选项可用'},
+          listen:{text:'按约定时隙原地守听，先不通话',
+                  note:'最省电，前提是有约定',
+                  impact:'以最低电量代价换到双份线索'},
+          hill:{text:'派人爬到高处，反复尝试公网呼叫',
+                note:'消耗最大，不产生任何可核验信息',
+                impact:'被判为资源透支的常见原因'}
+        }},
+    4:{ title:'回执来了，或仍然没来',
+        situation:'虚构情境 · 19:00 · 临时避雨点',
+        paras:{
+          y:'四十分钟后，指挥点的回执到了：接报已确认，要求原地待命、分批撤回。',
+          n:'没有任何回执。雨幕里只剩下雨声，和一个还没被别人看见的你们。',
+          m:'你在第二幕上报的缺口位置，成了唯一一条能被反复引用的信息——这正是把“自己的位置”变成“共同信息”的意义。',
+          l:'终端最后一次提示电量不足。剩下的每一格电，都要算清楚花在哪。'
+        },
+        choice:{
+          hold:{text:'在安全位置待命，按统一安排分批撤回',
+                note:'把判断权交给能看见全局的人',
+                impact:'增加一条线索，显著降低透支风险'},
+          push:{text:'继续向前，抢在天黑前抵达村卫生站',
+                note:'速度优先，但放弃了协同',
+                impact:'冒进计数 +1，直接影响结局判定'},
+          handover:{text:'把此前上报的坐标与路况整理成交接清单再行动',
+                    note:'让信息可以被移交、被续接',
+                    impact:'形成最后一份可交叉核对的情报'},
+          relay:{text:'把剩余电量优先留给通信，向村委发出最后一次状态报文',
+                 note:'高价换取一次被看见的机会',
+                 impact:'电量若能撑住，线索收益最高'}
+        }}
+  },
+  facts:{
+    position:{name:'定位与导航服务', listen:'定位',
+      point:'北斗系统提供定位、导航服务，实际表现受观测环境、遮挡与终端形态影响。',
+      body:'北斗卫星导航系统是中国自主建设、独立运行的全球卫星导航系统，可向用户提供定位、导航等服务。实际定位表现受观测环境、遮挡条件、终端形态与使用方式等影响，本作品不引用任何未经核实的精度数值。',
+      caution:'卫星系统输出的是坐标信息；坐标本身不判断道路是否安全。',
+      pending:['具体服务性能指标与精度分级（未引用）']},
+    sms:{name:'短报文通信能力', listen:'短报文通信',
+      point:'北斗提供短报文通信服务，可在公网覆盖不足处经卫星链路收发短信息。',
+      body:'北斗系统提供短报文通信服务，使具备相应能力的终端在地面公网覆盖不足的条件下，仍可通过卫星链路收发短信息（区域短报文与全球短报文的具体分类、覆盖范围与容量限制未引用）。本虚构故事正是以这一公开能力为背景设定。',
+      caution:'能否发出报文取决于终端能力、天空可见条件与操作规范；发出报文不等于救援调度已经完成。',
+      pending:['区域短报文 / 全球短报文的服务范围、报文长度与频度限制（未引用）']},
+    timing:{name:'授时服务', listen:'授时',
+      point:'北斗提供授时服务，可为电力、通信、交通、金融等时间同步需求提供支撑。',
+      body:'北斗系统提供授时服务，可为电力、通信、交通、金融等领域的时间同步需求提供支撑（具体行业应用规模与成效未引用）。',
+      caution:'授时是时间基准能力，与“是否安全”“是否可通行”没有直接关系。',
+      pending:['授时精度指标与典型行业场景（未引用）']},
+    global:{name:'全球服务能力', listen:'全球服务',
+      point:'北斗三号完成全球组网后具备向全球用户提供卫星导航服务的能力。',
+      body:'北斗三号系统完成全球组网后，具备向全球用户提供卫星导航服务的能力（组网节点时间、系统构成等表述未引用）。',
+      caution:'“具备全球服务能力”与“任意地点任意时刻都能顺利使用”不是同一句话。',
+      pending:['组网完成时间与星座构成表述（未引用）']},
+    service:{name:'公开服务与服务类型', listen:'服务类型',
+      point:'北斗面向用户提供多类服务，含面向大众的公开服务。',
+      body:'北斗系统面向用户提供多类服务，其中包含面向大众用户的公开服务；服务类型的完整划分、开放方式与使用条件以官方发布口径为准（未引用）。',
+      caution:'公开服务不等于无限制使用；服务层级与准入条件需以官方口径为准。',
+      pending:['服务类型划分、命名与开放方式的官方口径（未引用）']},
+    civil:{name:'民用应用：防灾减灾 / 交通 / 农业', listen:'民用应用',
+      point:'北斗民用应用覆盖防灾减灾、交通运输、农业农村等方向。',
+      body:'北斗系统的民用应用覆盖防灾减灾、交通运输、农业农村等多个方向（各项具体部署规模与实际成效未引用）。本作品中的救援情境为虚构创作，不等同于任何真实应用案例。',
+      caution:'行业应用是系统工程，终端、网络、人员组织缺一不可。',
+      pending:['各民用方向的代表性案例与规模数据（未引用）']},
+    boundary:{name:'能力边界与常见误解', listen:'能力边界',
+      point:'导航、短报文、地面网络、现场组织与专业救援分属不同层面，不可互相替代。',
+      body:'卫星导航、短报文通信、地面通信网络、现场组织与专业救援分属不同层面：能提供位置信息 ≠ 能保证路线安全；能发出报文 ≠ 已完成协同调度。',
+      caution:'这正是本作品的核心价值导向之一。',
+      pending:['表述所依据的官方原文出处（未引用）']}
+  },
+  endings:{
+    E1:{title:'协同闭环：让信息先抵达，让人再动',
+        text:'足够多的交叉核验、足够多的余电，加上没有一次孤身冒进——你们留在原地，被回执准确接住。这不是某个英雄的判断，而是四次把“我的信息”变成“共同信息”的结果。'},
+    E2:{title:'稳妥撤回：带着不完整但可用的信息离场',
+        text:'你们没有走完所有核查，但保留了关键记录与余电。队伍按统一安排撤回，留下一份可以交接的情报和一份写清楚“还差什么”的清单。'},
+    E3:{title:'资源透支：信号还在，设备先倒下',
+        text:'电量或时间先于雨势停下。故事停在这里，提醒一件最朴素的事：再好的系统，也需要被能量和时间托住。'},
+    E5:{title:'冒进受阻：快，但没有解决“下一步”',
+        text:'至少两次选择绕过了核验程序。位置、报文、通信设备都无法代替“先想清楚下一步”——它们只在秩序里发挥价值。这是本作品最想让人停下来的一种结局。'},
+    E4:{title:'核验不足：停留在“信息存在”而非“信息足够”',
+        text:'你们手上有若干坐标与说法，但没有一条经过双重交叉核验。故事不以“安全抵达”收尾，而是把这个缺口留给你复盘。'}
+  },
+  why:{
+    plan:'第一幕先行核对联络计划，使后续低耗电方案可用',
+    rush:'第一幕抢时间出发，没有留下联络约定',
+    roadInfo:'核对道路台账，使第二幕出现已核验路线',
+    marked:'第二幕上报了缺口位置，信息可被他人引用',
+    risk:'冒进计数累加，把结局推向「受阻」一侧',
+    sms:'第三幕发出短报文，使第四幕具备协同前提',
+    listen:'第三幕按约定时隙守听，以低耗电换到线索',
+    waste:'第三幕反复尝试公网，消耗大且未产生可核验信息',
+    hold:'第四幕选择在安全位置待命',
+    handover:'第四幕整理交接清单，形成可续接的信息',
+    relay:'第四幕把电量押在最后一次报文上',
+    tpl:(o)=>'第 '+o.a+' 幕《'+o.c+'》：'+o.w,
+    power:(o)=>'终局电量 '+o.p+'%，低于维持联络所需的 10%',
+    time:'处置窗口耗尽，不再具备等待回执的时间',
+    end1:(o)=>'终局：电量 '+o.p+'%，线索 '+o.c+' 条，冒进计数 0',
+    end2:(o)=>'终局：线索 '+o.c+' 条达到 4 条以上，但因资源或冒进计数未达最优',
+    end4:(o)=>'终局：线索仅 '+o.c+' 条，未达到 4 条的交叉核验门槛',
+    end5:(o)=>'终局：冒进计数 '+o.r+'（≥2 即判定为受阻）'
+  },
+  drawer:[
+    {h:'1 · 作品简介',
+     ps:['《北斗·归途：一束信号，走出风暴》是一件单文件网页互动叙事作品。作品以“北斗短报文通信”这一真实存在的公开能力为技术背景，虚构一场汛期山地暴雨中的志愿队协同故事，让观众在四幕分支里承担决策。',
+         '<strong>选题价值：</strong>讲中国科技创新故事，但不停留在成就罗列，而是呈现技术能力与组织协同、信息边界之间的关系。']},
+    {h:'2 · 创新点',
+     lis:['<strong>事实卡与虚构情节分离。</strong>虚构叙事以琥珀色左边框呈现，北斗公开知识以冷蓝色独立区域呈现，两区在视觉、文案与数据结构上完全隔离，观众任一时刻都能分辨“这是故事”还是“这是系统知识”。',
+          '<strong>选择累积因果。</strong>前序选择同时改变后续幕次的正文文本、可用选项集合与资源门槛，而非只在最后一幕切换结局文案；最终结局由“资源余量 + 核验线索完整度 + 冒进计数”共同判定，共 5 种。',
+          '<strong>视听由代码生成。</strong>四幕场景插画为 SVG / CSS 程序绘制，环境音为 Web Audio 实时合成的白噪声，全站零图片、零音频素材，代码即画面、代码即声音。',
+          '<strong>中英双语同一份数据。</strong>同一套状态机驱动中文与英文两套文案，语言选择写入导出文件，可直接面向国际传播场景使用。',
+          '<strong>传播型互动叙事。</strong>一键导出 <code>beidou-choices.json</code>（选择序列、资源变化、结局归因、事实卡查看记录、界面语言），既可作为课堂/社群复盘素材，也可作为二次传播的话题凭证；全站纯静态单文件，无构建、无外部依赖。']},
+    {h:'3 · 技术路线',
+     lis:['<strong>分支状态机：</strong>四幕线性推进 + 幕内多分支。幕为单位推进，选项为分支出口，状态由「资源三元组 + 标志位集合 + 选择链」共同构成。',
+          '<strong>资源模型：</strong>电量（0–100%）、时间（12 刻）、核验线索（0–8）。每个选项声明代价增量与解锁门槛，门槛不满足时该选项被锁定并说明原因。',
+          '<strong>场景插画：</strong>四幅 SVG 场景图由代码按图层绘制（远景山脊 / 中景地形 / 近景人物与光），统一 viewBox 与配色，动效仅雨丝与雾气位移，<code>prefers-reduced-motion</code> 下自动降级为静态插画。',
+          '<strong>环境音：</strong>Web Audio 实时合成。白噪声缓冲经高通 + 带通塑形得到雨声、经低通并与低频振荡器调制增益得到风声；音量由增益节点线性渐变控制，默认关闭，必须由用户点击才创建 AudioContext（符合浏览器自动播放策略）。',
+          '<strong>回放数据结构：</strong>每次选择落一条记录，含幕号、选项标签、资源前后快照、增量、跨幕影响说明与标签；回放视图按索引逐步揭示，支持单步 / 自动 / 全展。',
+          '<strong>无外部依赖：</strong>纯 HTML + CSS + 原生脚本，零三方库、零字体与图片外链、零后端、零网络请求（事实卡外链需联网打开）。',
+          '<strong>可访问性：</strong>尊重 prefers-reduced-motion，全键盘可达（Tab + <code>:focus-visible</code>），移动端单列重排。']},
+    {h:'4 · 操作与运行说明',
+     lis:['双击 beidou.html 用任意现代浏览器打开即可运行，无需安装依赖、无需联网（事实卡外链需联网打开）。',
+          '主叙事列依次阅读情境文本 → 阅读每个选项的“代价 / 收益”标注 → 点击可用选项推进；灰色虚线按钮表示当前资源或前置条件不足，点击会给出具体原因。',
+          '右上「中文 / EN」切换整站语言，切换不重置剧情进度，语言选择会写入导出文件。',
+          '右上「音效：关 / 开」切换实时合成环境音；首次点击才会创建音频上下文，关闭后立即静音。',
+          '右侧资源面板实时反映电量、处置窗口与核验线索；事实卡点击展开即被计入查看记录；「事实核对表」可逐条查看 7 条表述的来源与核对状态。',
+          '完成第四幕后自动生成结局与归因清单；此后可播放回放或导出 JSON。',
+          '右上角“作品说明”打开本抽屉，Esc 或点击遮罩关闭。']},
+    {h:'5 · 验证与测试自查',
+     ps:['<span class="pill ok">已完成</span><strong>以下为团队自行核对的内容：</strong>'],
+     lis:['<strong>公开资料自行核对：</strong>事实卡依据北斗系统官方公开介绍页面（页面内已有真实链接）逐条自行核对，未能取得官方原文的细项一律标注“未引用”。',
+          '<strong>页面功能走查：</strong>按操作路径逐项验证导出文件（<code>beidou-choices.json</code> 字段完整，含界面语言）、键盘操作（Tab + <code>:focus-visible</code> 全键盘可达、Esc 关闭抽屉）、双语切换后布局不错乱、移动端单列布局、减少动效（<code>prefers-reduced-motion</code>）、边界提示（电量不足 / 处置窗口不足 / 缺少前置标志三类锁定原因回显、资源耗尽进入“资源透支”结局）、脚本语法校验（Node 22 <code>--check</code>）通过。',
+          '<strong>代码与第三方资源自查：</strong>无外部依赖；地图、四幅场景插画均由代码绘制；环境音为程序实时合成，未使用任何第三方图片、字体、图标或音频素材。'],
+     ps2:['<span class="pill todo">尚未开展</span><strong>如实列出，不作已完成陈述：</strong>'],
+     lis2:['<strong>专业审阅：</strong>未邀请卫星导航或应急管理相关专业人员审读作品表述。',
+           '<strong>真实数据核对：</strong>未接入任何真实北斗信号，也未使用真实应急案例数据；剧情、机构名称与资源数值均为虚构设定。',
+           '<strong>用户测试：</strong>未开展目标用户（观众）任务测试，无可玩性、理解度与传播意愿数据。'],
+     ps3:['<span class="pill todo">后续计划</span><strong>安排如下：</strong>'],
+     lis3:['邀请卫星导航或应急管理相关专业人员审读作品表述并修订。负责人：吴昊（团队负责人）；时间：赛后 1 个月内。',
+           '逐条比对官方公开介绍页面原文，补全细项内容或维持“未引用”标注。负责人：吴昊（团队负责人）；时间：赛后 1 个月内。',
+           '面向目标受众开展小样本可玩性、理解度与传播意愿测试。负责人：吴昊（团队负责人）；时间：赛后 2 个月内。'],
+     ps4:['<strong>一句话原则：本材料的表述与作品实际完成状态一致，未开展的专业审阅、实地测绘与用户测试均如实列为后续工作，未以任何形式宣称已完成。</strong>']},
+    {h:'6 · AI 使用与素材说明',
+     lis:['<strong>AI 辅助：</strong>代码骨架与文案初稿由 AI 辅助生成，团队负责逐行审阅、改写与定稿。',
+          '<strong>画面素材：</strong>全部视觉元素（地形、路径、光影、进度条、四幅场景插画）均由 HTML / CSS / SVG 代码绘制，未使用任何第三方图片、字体或图标资源。',
+          '<strong>音频素材：</strong>雨声与风声由 Web Audio 实时合成，<strong>未使用任何第三方音频素材或采样库</strong>；不含音乐与语音。',
+          '<strong>待完成：</strong>团队原创的剧本精修分镜、配音旁白与音效尚未完成；如后续加入音视频，需补署出处与授权说明。',
+          '<strong>引用：</strong>对外链接仅使用北斗相关官方站点栏目页，未在正文中引述未经核实的第三方数据。']},
+    {h:'7 · 边界声明',
+     lis:['本作品情节、人物、地名、天气过程、机构名称与事件安排<strong>全部为虚构创作</strong>，不代表任何真实事件、个人或单位。',
+          '本作品<strong>不构成导航、定位或应急救援的行动建议</strong>，不可用于任何实际场景；真实遇险请拨打当地报警与救援电话。',
+          '涉及北斗系统的技术表述均以上述官方公开资料为唯一来源，凡未能取得官方原文的细项一律标注“未引用”，<strong>本作品不引用，也不据以立论</strong>。',
+          'This work is fiction. It is <strong>not</strong> navigation, positioning or emergency-rescue guidance. In a real emergency, call your local emergency number.']},
+    {h:'8 · 团队原创贡献清单',
+     ps:['本作品的原创分工如下，与《团队分工打勾表》逐条对应，不另写一套口径。'],
+     lis:['<strong>主创 吴昊（团队负责人）：</strong>整体设计、四幕分支结构与资源模型（电量 / 时间 / 核验线索）的设定、虚构与真实的边界处理原则、全篇立意与最终把关。',
+          '<strong>技术实现 徐志：</strong>四幕状态机与选项锁定逻辑、5 种结局与归因清单的判定、SVG 场景插画（远景山脊 / 中景地形 / 近景人物三层构图）、Web Audio 实时合成雨声与风声。',
+          '<strong>内容与设计 苏张柏绮：</strong>剧本（起承转合四幕）与分支文本、7 条北斗事实卡及来源标注、中英双语整站文案、创作手记与事实核对表。',
+          '<strong>原创性说明：</strong>全部代码、剧本、文案与视觉元素由团队自行完成，无第三方图片、字体、图标或音频素材。AI 仅用于代码骨架与文案初稿，逐行审阅与改写由团队完成——规则怎么设、边界划在哪、哪些话不能说，是作品成立与否的关键，这部分由人决定。']},
+    {h:'9 · 创作手记（团队原创部分）',
+     ps:['以下记录本作品的选题、结构与边界处理过程，用于说明学生的原创工作量与取舍依据。'],
+     lis:['<strong>选题缘起。</strong>我们希望讲一个“技术先进但不等同于安全”的中国科技创新故事，而不是复述成就清单。团队把北斗短报文通信作为背景，因为它天然包含“公网失效时如何把信息送出去”的张力；再虚构一场山地暴雨，让观众在信息不完整的条件下承担决策，体会“信息存在”与“信息足够”的差距。',
+          '<strong>剧本结构：起承转合。</strong>第一幕<em>起</em>：预警传来，选择“先确认什么”；第二幕<em>承</em>：现场出现缺口，信息是否已被核验直接改写可用选项；第三幕<em>转</em>：公网失效，第一幕是否留下联络约定在此集中兑现；第四幕<em>合</em>：回执到来与否，决定能否进入协同。四幕均设计为“同一件事的两次确认”，使选择具有累积性。',
+          '<strong>角色设定。</strong>队长周航负责判断与取舍；通信员叶桉负责终端与联络节律；志愿者林舟体力好但缺少现场经验，代表“凭直觉行动”的诱惑；村医助理许迟必须在天黑前送达药品，提供时间压力。山下联络员（村委值班人员）始终未露面，代表“能看见全局但需要你给出可用信息”的那一端——这一设定用于把“信息交接”写进人物关系，而非旁白。',
+          '<strong>分镜与节奏设计思路。</strong>每幕保持“情境文本（3 段以内）→ 资源代价可见的选项 → 立即反馈”的三拍结构；插图统一采用远景山脊、中景地形、近景人物三层构图，用暖琥珀指示人的位置、用冷蓝指示系统知识区域；节奏上把最贵的选项放在第三幕，逼迫观众在“发出一条报文”和“省下电量”之间计算，形成全篇的张力峰值。',
+          '<strong>虚构与真实的边界处理原则。</strong>其一，物理分区：虚构叙事与系统知识使用不同边框颜色与不同数据数组，互不引用；其二，逐条标源：每条系统知识附官方来源链接，未能取得原文的细项显式标注“未引用”；其三，不做承诺性表述：不引用未经核实的精度指标，不把“发出报文”写成“救援完成”，结局也不以“安全抵达”作为唯一正解。',
+          '<strong>未完成部分。</strong>成片配音与视听制作（旁白录制、环境音分轨、动态分镜）由团队后续完成；本轮为可视化原型阶段，画面与声音均由代码现场生成，作为后续成片的镜头脚本与时间轴依据。']},
+    {h:'10 · 传播适配说明',
+     lis:['<strong>目标受众：</strong>青年观众，尤其是高校学生与年轻科普内容消费者。他们习惯短时长、强反馈的互动内容；本作品把“卫星系统能力”从参数表搬进情境决策，并预留了国际传播所需的英文版本。',
+          '<strong>传播渠道与形态：</strong>',
+          '① <strong>校园公众号 / 社团推送：</strong>互动网页为主形态，单文件 HTML 可直接静态托管或作为附件分发，无需安装与联网；推送文案围绕“你会怎么选”展开，引导读者自己走到不同结局。',
+          '② <strong>社团活动 / 课堂复盘：</strong>朗读版文本（四幕正文 + 结局归因清单）配合投影使用，主持人逐幕停顿、现场投票后再推进；导出 JSON 用作复盘素材，说明每个结局由哪些选择造成。',
+          '③ <strong>国际传播版本：</strong>切换 EN 后整站英文可用（含事实卡要点与边界声明），用于面向海外青年受众的分发；涉及北斗的表述沿用同一套未引用标注，不因语言切换而放宽。',
+          '④ <strong>事实卡图文：</strong>7 条事实卡可单独截取为图卡，用于社交平台的知识补位，每张都保留来源标注与“未引用”提示。',
+          '<strong>适配原则：</strong>同一内容多形态复用而不多版本维护——所有形态共享同一份剧本数据与同一张事实核对表。']},
+    {h:'11 · 版本与变更记录',
+     lis:['<span class="ver">v1</span> 原型版：确立虚构叙事与事实卡分离的框架；完成四幕分支、三条资源模型、5 种结局与归因清单、7 条事实卡与决策回放。<em>日期：2026-10-18。</em>',
+          '<span class="ver">v2</span> 自查版：改写入实互叙的表述口径，把“验证与测试自查”拆分为「已完成 / 尚未开展 / 后续计划」三段，不宣称未开展的工作已完成。<em>日期：2026-10-18。</em>',
+          '<span class="ver">v3</span> 视听与双语版：新增四幕程序绘制场景插画、Web Audio 实时合成环境音（默认关闭）、中英双语整站切换、创作手记、事实核对表、传播适配说明与变更记录；导出文件增加界面语言字段。<em>日期：2026-10-18。</em>',
+          '<span class="ver">v4</span> 提交版整理：新增「8 · 团队原创贡献清单」独立分区（原 8–11 顺延为 9–11），按主创 / 技术实现 / 内容与设计三类写明各自做了什么；版本记录补入实际日期并接入公开仓库（github.com/junming49/blue-boundary-coral-reef）。<em>日期：2026-10-22。</em>']}
+  ]
+},
+
+/* ---------------------------------------------------------- English */
+en:{
+  htmlLang:'en', docTitle:'BeiDou · The Way Back: One Signal Out of the Storm',
+  meta:{
+    heroK:'CHINA STORY · BRANCHING INTERACTIVE NARRATIVE · FICTIONAL SCENARIO',
+    title:'BeiDou · The Way Back: One Signal Out of the Storm',
+    lede:'An interactive narrative prototype on the theme of China\u2019s science and technology innovation stories. The storm, the mountain, the people and the events are entirely fictional. The blue section beside the story holds publicly documented facts about the BeiDou Navigation Satellite System, each one sourced and flagged where verification is still pending. Across four acts you make choices, every choice costs resources, and those choices accumulate into different endings.',
+    chips:['A position is not a safe road','Signals need people who understand them','This story is not rescue guidance']
+  },
+  src:{
+    intro:'China Satellite Navigation Office, Test and Assessment Research Centre \u00b7 BeiDou System Introduction',
+    portal:'BeiDou Navigation Satellite System \u00b7 official website'
+  },
+  ui:{
+    openDrawer:'About', closeDrawer:'Close (Esc)', drawerTitle:'About this work',
+    soundOn:'Sound: on', soundOff:'Sound: off',
+    soundNote:'Ambient rain and wind are synthesised in your browser in real time \u2014 no third-party audio files. Off by default; switch it on only if you want it.',
+    audioInit:'Ambience on (synthesised live, low volume).', audioEnd:'Ambience off.',
+    audioFail:'This browser does not support Web Audio, so no ambience can be generated.',
+    badgeFic:'FICTION', badgeKnow:'VERIFIED FACTS', storyHead:'Interactive narrative \u00b7 four acts',
+    mapHead:'Wuling \u00b7 indicative terrain map',
+    mapFoot:'Routes and terrain are drawn for the story only. No real coordinates; nothing here can be used for positioning or command.',
+    lab1:'Rally point', lab2:'Dead zone at the pass', lab3:'Village clinic', lab2alt:'Low-battery zone',
+    resHead:'Resources',
+    labPower:'Power (charge left in the terminal)',
+    labTime:'Time (response window; 1 slot = 15 minutes)',
+    labClue:'Verified clues (information that survived cross-checking)',
+    resHint:'When resources run short, some options lock, and each locked button states exactly why.',
+    factViewTitle:'BeiDou fact cards',
+    factViewHint:'Select any card above for content and sources. This section is kept strictly separate from the story. Statements marked \u201cto be verified\u201d have not yet been checked line by line against official material.',
+    srcLabel:'Official sources:', pendingLabel:'To be verified: ',
+    playHead:'Decision playback', playEmpty:'No choices yet. Once you choose, your decision chain builds up here step by step.',
+    pbStep:'Next step', pbAuto:'Auto play', pbStop:'Stop', pbAll:'Expand all', pbReset:'Reset',
+    btnRestart:'Restart', btnExport:'Export beidou-choices.json',
+    stepMeta:(o)=>'Act '+o.n+' / 4 \u00b7 '+o.acts,
+    actWord:'Act', cost:'Cost / gain: ', noCost:'No cost', effect:'Knock-on effect: ', locked:'Unavailable: ',
+    endingHead:'Four acts complete \u00b7 reviewing your ending',
+    endingSit:'Fictional ending \u00b7 decided by remaining resources and clue completeness',
+    endingWhy:'Which choices produced this ending',
+    endingFoot:'A fictional ending, not emergency-response guidance. Use the causal chain above for classroom or community debriefs.',
+    restartDone:'A new run begins. Resources and story state have been reset.',
+    exportDone:'Exported beidou-choices.json (choice sequence, resource changes, ending attribution, fact-card views, language).',
+    lockedToast:(o)=>'Unavailable: '+o.r, chosenNote:'Choice recorded.',
+    langDone:(o)=>'Interface language switched to '+o.name+'.',
+    units:{power:'Power', time:'Time', clue:'Clues'}, sfx:{power:'%', time:' slot(s)', clue:' note(s)'},
+    veriHead:'Source check table', ckPoint:'Claim', ckSrc:'Official source', ckStatus:'Status', ckNote:'Notes',
+    st_primary:'Compared (core claim)', st_pending:'To be verified',
+    veriFoot:'Status flags are set by the team against the official pages listed above. Any statement marked \u201cto be verified\u201d must not be cited until it has been checked line by line.',
+    illusAlt:'Scene illustration drawn in code (SVG/CSS, no image assets)',
+    illusCap:['Act 01 \u00b7 Rain on the mountain \u00b7 Warning','Act 02 \u00b7 The track in \u00b7 Washout',
+              'Act 03 \u00b7 Cut off on the ridge \u00b7 Link degraded','Act 04 \u00b7 Coordinated action \u00b7 Acknowledged']
+  },
+  rf:{
+    back:'Not enough time: returning to the village office costs 4 slots',
+    sms:'Not enough power: a formatted message plus waiting for the acknowledgement costs 25%',
+    listen:'No listening window was agreed in Act 1, so standing by now matches nobody',
+    hold:'Not enough power: staying in contact needs at least 8%',
+    push:'Too little power or too little time left to stay in contact while advancing',
+    relay:'Not enough power: a full status message costs at least 30%'
+  },
+  scene:{
+    1:{ title:'The rain warning arrives. What do you confirm first?',
+        situation:'Fictional scenario \u00b7 16:00, flood season \u00b7 outside the Wuling village office',
+        paras:{
+          a:'It is four in the afternoon in Wuling, and the rain has already dropped below the ridge. The village office has just relayed a rainstorm warning; the loudspeaker keeps repeating one line: of the two village tracks toward Shang\u2019ao, at least one junction will flood within two hours.',
+          b:'Four people: Zhou Hang, the captain; Ye An, on communications; Lin Zhou, a volunteer; and Xu Chi, a clinic assistant who has to reach the Shang\u2019ao health station with medicine before dark. You have a terminal capable of BeiDou short messages, two spare batteries, and a comms plan nobody has confirmed.',
+          c:'What you confirm first decides where this team stands two hours from now.'
+        },
+        choice:{
+          plan:{text:'Check the comms plan first: listening windows, spare power, rally point',
+                note:'Produces the first checkable comms agreement',
+                impact:'Opens the low-power "stand by at the agreed window" option in Act 3'},
+          rush:{text:'Leave now, before the rain worsens, and read the water as you go',
+                note:'Saves time, leaves no comms agreement behind',
+                impact:'Blocks the listening option in Act 3, with no second chance to agree on one'},
+          road:{text:'Check the road register and upstream water levels at the village office first',
+                note:'Costs time, returns documented road and water information',
+                impact:'Unlocks the verified eastern detour in Act 2'}
+        }},
+    2:{ title:'A washout blocks the fork',
+        situation:'Fictional scenario \u00b7 16:50 \u00b7 halfway up the mountain track',
+        paras:{
+          a:'Flash flooding has torn a gap roughly two metres wide across the middle of the track, and muddy water is spreading toward the bamboo below. Experience says this much: shallow-looking water often hides a hollowed-out roadbed.',
+          r:'You left in too much of a hurry, and the spare batteries are still on the desk at the village office \u2014 whatever charge the terminal has left is all you have. That is the bill "buying time" handed you.',
+          p:'On the first page of the waterproof notebook is the listening window agreed before departure: one round every twenty minutes. Miss it and you wait another twenty.',
+          rd:'The eastern detour the village elder described lies just ahead: an old canal road, half a metre higher than the track. That is what forty-five minutes bought you.',
+          ni:'Every position you hold comes from maps and experience. Not one of them was verified on the ground today.'
+        },
+        choice:{
+          avoid:{text:'Take the eastern detour \u2014 longer, but it is on the register',
+                 note:'A verified route, plus one fresh field observation',
+                 impact:'Builds a second cross-checkable route report'},
+          back:{text:'Return to the village office, check the register, then come back in',
+                note:'Expensive, but it buys documented road conditions',
+                impact:'Recovers the road information missing from Act 1'},
+          mark:{text:'Do not cross yet: mark the washout with the terminal and report the position',
+                note:'Turns a position into a position others can cite',
+                impact:'Can be compiled into the handover list in Act 4'},
+          wade:{text:'Trust experience and probe the gap directly',
+                note:'Fastest, and produces nothing checkable',
+                impact:'Rash count +1, feeds straight into the ending'}
+        }},
+    3:{ title:'The rain closes in, and the network is gone',
+        situation:'Fictional scenario \u00b7 18:10 \u00b7 the leeward side of the pass',
+        paras:{
+          a:'The rain drowns out shouting, and the cellular network is gone for good. Two of you are on this slope, two on that one, and nobody knows whether both groups are even standing on the same path.',
+          p:'Fortunately a listening window was agreed before departure: one round every twenty minutes. Miss this round and you wait twenty more.',
+          r:'No comms agreement was made before setting out, so all that is left is redialling and hoping.',
+          k:'The fall while crossing the water let moisture into the terminal housing, and the battery is now draining far faster than expected.'
+        },
+        choice:{
+          sms:{text:'Send a formatted position-and-status message to the command post over satellite short message',
+               note:'States clearly where you are and what condition you are in',
+               impact:'An acknowledgement arrives in Act 4; coordinated options open up'},
+          listen:{text:'Stand by at the agreed window without transmitting',
+                  note:'Cheapest option, provided a window was agreed',
+                  impact:'Double clue yield at the lowest power cost'},
+          hill:{text:'Send someone to high ground and keep retrying the cellular network',
+                note:'Highest drain, and produces nothing checkable',
+                impact:'A common route into the resource-exhaustion ending'}
+        }},
+    4:{ title:'The acknowledgement arrives \u2014 or still does not',
+        situation:'Fictional scenario \u00b7 19:00 \u00b7 a temporary rain shelter',
+        paras:{
+          y:'Forty minutes later, the acknowledgement comes in from the command post: report received, hold position, withdraw in groups as directed.',
+          n:'No acknowledgement at all. Nothing left in the curtain of rain but the rain itself, and four people nobody else can see.',
+          m:'The washout position you reported in Act 2 became the one piece of information others could cite again and again \u2014 which is exactly what turning a private position into shared information means.',
+          l:'The terminal gives its last low-battery warning. Every bar left has to be accounted for before it is spent.'
+        },
+        choice:{
+          hold:{text:'Hold in a safe spot and withdraw by groups as directed',
+                note:'Hands judgement to whoever can see the whole picture',
+                impact:'Adds a clue and sharply lowers the exhaustion risk'},
+          push:{text:'Press on and reach the village clinic before dark',
+                note:'Speed first, coordination dropped',
+                impact:'Rash count +1, feeds straight into the ending'},
+          handover:{text:'Compile the reported coordinates and road notes into a handover list before moving',
+                    note:'Makes the information transferable and continuous',
+                    impact:'Forms the final cross-checkable brief'},
+          relay:{text:'Spend the remaining power on one last status message to the village office',
+                 note:'A high price for one chance to be seen',
+                 impact:'Highest clue yield, if the battery holds out'}
+        }}
+  },
+  facts:{
+    position:{name:'Positioning and navigation', listen:'Positioning',
+      point:'BeiDou provides positioning and navigation; real performance depends on environment and terminal.',
+      body:'The BeiDou Navigation Satellite System is a global satellite navigation system China built and operates independently, providing positioning, navigation and related services. Actual performance depends on observation conditions, obstructions, terminal type and how the terminal is used. This work quotes no unverified accuracy figures.',
+      caution:'A satellite system outputs coordinates. Coordinates do not decide whether a road is safe.',
+      pending:['Service performance metrics and accuracy tiers (to be verified)']},
+    sms:{name:'Short-message communication', listen:'Short message',
+      point:'BeiDou supports short messages over satellite links where terrestrial coverage falls short.',
+      body:'BeiDou provides short-message communication, allowing capable terminals to send and receive brief texts over satellite where terrestrial network coverage is insufficient. (The classification, coverage and capacity limits of regional versus global short messages remain to be verified.) This fictional story is built on that publicly documented capability.',
+      caution:'Whether a message goes out depends on terminal capability, sky visibility and correct operation. A sent message is not a completed rescue dispatch.',
+      pending:['Coverage, message length and frequency limits for regional and global short messages (to be verified)']},
+    timing:{name:'Timing service', listen:'Timing',
+      point:'BeiDou provides timing that supports synchronisation in power, telecoms, transport and finance.',
+      body:'BeiDou provides a timing service supporting time synchronisation for the power grid, telecommunications, transport and finance sectors. (Industry scale and measured results remain to be verified.)',
+      caution:'Timing is a time reference. It says nothing about whether a place is safe or passable.',
+      pending:['Timing accuracy figures and example industry scenarios (to be verified)']},
+    global:{name:'Global service capability', listen:'Global service',
+      point:'With its full constellation in place, BeiDou-3 can serve users worldwide.',
+      body:'After completing its global constellation, BeiDou-3 is able to deliver satellite navigation services to users worldwide. (Wording on the completion timeline and constellation composition remains to be verified.)',
+      caution:'"Capable of global service" is not the same sentence as "usable anywhere, at any moment".',
+      pending:['Completion date of the constellation and its composition (to be verified)']},
+    service:{name:'Open services and service classes', listen:'Service classes',
+      point:'BeiDou offers several service classes, including open services for the general public.',
+      body:'BeiDou offers multiple classes of service, including open services aimed at general users. The full classification, availability and conditions of use follow official publications. (To be verified.)',
+      caution:'Open service does not mean unlimited use. Service tiers and access conditions follow official wording.',
+      pending:['Official wording on service classification, naming and access (to be verified)']},
+    civil:{name:'Civil uses: disaster reduction / transport / agriculture', listen:'Civil uses',
+      point:'BeiDou\'s civil uses span disaster prevention and mitigation, transport, and agriculture.',
+      body:'BeiDou is used across disaster prevention and mitigation, transport, agriculture and rural development. (Deployment scale and measured results in each area remain to be verified.) The rescue situation in this work is fiction and is not a real use case.',
+      caution:'Industry application is systems engineering: terminals, networks and people are all required.',
+      pending:['Representative cases and scale figures for each civil domain (to be verified)']},
+    boundary:{name:'Capability limits and common misreadings', listen:'Limits',
+      point:'Navigation, short messages, terrestrial networks, on-site coordination and professional rescue sit on different layers.',
+      body:'Satellite navigation, short-message communication, terrestrial networks, on-site coordination and professional rescue are different layers: being able to give a position \u2260 being able to guarantee a safe route; being able to send a message \u2260 having completed coordinated dispatch.',
+      caution:'This is one of the core points the work is making.',
+      pending:['Official source text underpinning this formulation (to be verified)']}
+  },
+  endings:{
+    E1:{title:'Closed loop: information arrives first, people follow',
+        text:'Enough cross-checks, enough charge left, and not one solo gamble \u2014 you held position and the acknowledgement landed exactly where you were. This is no single hero\u2019s judgement; it is four moments in which "my information" became "our information".'},
+    E2:{title:'Orderly withdrawal: leaving with partial but usable information',
+        text:'You did not finish every check, but you kept the key record and some charge. The team withdrew as directed, leaving a brief that can be handed over and a list saying plainly what is still missing.'},
+    E3:{title:'Resource exhaustion: the signal held, the device did not',
+        text:'Power or time ran out before the rain did. The story stops here to make one plain point: even the best system still has to be carried by energy and by time.'},
+    E5:{title:'Rashness blocked: fast, but the next step was never solved',
+        text:'At least two choices skipped verification. Coordinates, messages and radios cannot substitute for working out the next step \u2014 they pay off only inside an orderly plan. This is the ending the work most wants you to sit with.'},
+    E4:{title:'Too few checks: information exists, but is not yet enough',
+        text:'You hold several coordinates and several accounts, and not one of them has been double-checked. The story refuses to close on a safe arrival; it leaves that gap for you to review.'}
+  },
+  why:{
+    plan:'Act 1: agreeing the comms plan first keeps the low-power option open later',
+    rush:'Act 1: leaving immediately left no comms agreement',
+    roadInfo:'The road register check produced a verified route in Act 2',
+    marked:'Act 2: reporting the washout made the position citable by others',
+    risk:'Rash choices accumulated, pushing the ending toward "blocked"',
+    sms:'Act 3: sending the short message gave Act 4 a basis for coordination',
+    listen:'Act 3: standing by at the agreed window traded low power for clues',
+    waste:'Act 3: repeated attempts on the cellular network drained resources and produced nothing',
+    hold:'Act 4: chose to hold in a safe position',
+    handover:'Act 4: compiled a handover list, making the information continuous',
+    relay:'Act 4: staked the remaining battery on one last message',
+    tpl:(o)=>'Act '+o.a+' \u201c'+o.c+'\u201d: '+o.w,
+    power:(o)=>'Final power '+o.p+'%, below the 10% needed to stay in contact',
+    time:'The response window ran out; no time left to wait for an acknowledgement',
+    end1:(o)=>'Final: power '+o.p+'%, clues '+o.c+', rash count 0',
+    end2:(o)=>'Final: '+o.c+' clues clears the threshold of 4, but resources or the rash count kept it short of the best outcome',
+    end4:(o)=>'Final: only '+o.c+' clues, short of the 4-clue cross-check threshold',
+    end5:(o)=>'Final: rash count '+o.r+' (two or more counts as blocked)'
+  },
+  drawer:[
+    {h:'1 \u00b7 Overview',
+     ps:['<em>BeiDou \u00b7 The Way Back: One Signal Out of the Storm</em> is a single-file interactive narrative. It takes BeiDou short-message communication \u2014 a real, publicly documented capability \u2014 as its technical backdrop and sets a fictional volunteer-team coordination story inside a mountain rainstorm, putting every decision in the audience\u2019s hands across four acts.',
+         '<strong>Why this subject:</strong> we wanted a story about Chinese science and technology innovation that is honest about limits, not a list of achievements. The work looks at how technical capability relates to coordination between people and to the boundaries of information.']},
+    {h:'2 \u00b7 What is new here',
+     lis:['<strong>Facts kept apart from fiction.</strong> The story sits in the amber-bordered column; documented BeiDou knowledge sits in a separate blue region. The two never share visual language, copy or data structures, so viewers can always tell which is which.',
+          '<strong>Choices that accumulate.</strong> Earlier choices change the prose, the available options and the resource thresholds of later acts \u2014 not just the closing paragraph. Five endings are decided jointly by remaining resources, clue completeness and a rash-choice count.',
+          '<strong>Audio-visual assets generated by code.</strong> The four scene illustrations are drawn in SVG/CSS; rainfall and wind are synthesised in real time from filtered noise. No image files, no audio files.',
+          '<strong>Two languages, one state machine.</strong> Chinese and English run on the same branching engine and the same data. The selected language is written into the export file, so the work can be handed straight to an international audience.',
+          '<strong>Built to travel.</strong> One click exports <code>beidou-choices.json</code> (choice sequence, resource deltas, ending attribution, fact-card views, interface language) as material for classroom or community debriefs. Static single file, no build step, no dependencies.']},
+    {h:'3 \u00b7 Technical approach',
+     lis:['<strong>Branching state machine:</strong> four acts advance linearly, each with several branches. State combines a resource triple, a set of flags and the choice chain.',
+          '<strong>Resource model:</strong> power (0\u2013100%), time (12 slots), verified clues (0\u20138). Each option declares its cost and its thresholds; when a threshold fails, the option locks and names the reason.',
+          '<strong>Scene illustrations:</strong> four SVG scenes built in layers \u2014 far ridges, mid-ground terrain, foreground figures and light \u2014 sharing one viewBox and palette. Only rain and mist animate, and everything freezes into a still image under <code>prefers-reduced-motion</code>.',
+          '<strong>Ambience:</strong> synthesised with the Web Audio API. White noise is shaped by a high-pass and a band-pass filter into rain, and by a low-pass filter with a slow LFO on gain into wind. Volume is ramped on a single gain node. Off by default: the AudioContext is created only on a user click, as browser autoplay policy requires.',
+          '<strong>Playback data:</strong> every choice records act number, option id, before/after resource snapshots, deltas, knock-on effect and tags. Playback supports single-step, auto and expand-all.',
+          '<strong>No dependencies:</strong> plain HTML, CSS and vanilla JavaScript \u2014 no libraries, no remote fonts or images, no backend, no network requests (fact-card links of course need a connection).',
+          '<strong>Accessibility:</strong> honours prefers-reduced-motion; fully keyboard reachable (Tab and <code>:focus-visible</code>); reflows to one column on mobile.']},
+    {h:'4 \u00b7 How to run it',
+     lis:['Open <em>beidou.html</em> in any modern browser \u2014 no install, no connection required.',
+          'Read the situation text, check the cost/gain line on each option, then choose. Dashed grey buttons are locked for a stated reason; clicking one repeats that reason.',
+          'Use the ZH / EN switch at the top to change language. Your progress is not reset, and the choice is written into the export.',
+          'Use Sound: off / on for the synthesised ambience. The audio context is created on first click; switching off mutes immediately.',
+          'The resource panel tracks power, the response window and verified clues. Opening a fact card is recorded. The source-check table lists every claim with its status.',
+          'After the fourth act, the ending and its causal chain appear; you can then play back or export the JSON.',
+          'Open the About drawer from the top right; Esc or clicking the backdrop closes it.']},
+    {h:'5 \u00b7 Verification and self-audit',
+     ps:['<span class="pill ok">Done</span><strong>Completed by the team:</strong>'],
+     lis:['<strong>Reference checking.</strong> Each fact card was checked by us against the official BeiDou introduction pages linked inside the work. Anything we could not confirm is explicitly marked \u201cto be verified\u201d.',
+          '<strong>Functional walkthrough.</strong> We verified the export file (<code>beidou-choices.json</code>, complete fields including interface language), keyboard operation (Tab navigation with <code>:focus-visible</code>, Esc to close the drawer), layout integrity after language switching, single-column mobile layout, reduced motion (<code>prefers-reduced-motion</code>), lock-reason feedback (insufficient power, insufficient time, missing prerequisite) including the resource-exhaustion ending, and script syntax (Node 22 <code>--check</code>).',
+          '<strong>Asset audit.</strong> No external dependencies. Map and all four scene illustrations are drawn in code; ambience is synthesised in the browser. No third-party images, fonts, icons or audio.'],
+     ps2:['<span class="pill todo">Not yet done</span><strong>Not yet carried out (listed honestly, never claimed as finished):</strong>'],
+     lis2:['<strong>Expert review.</strong> No specialist in satellite navigation or emergency management has reviewed the wording of this work.',
+           '<strong>Real data.</strong> No real BeiDou signal and no real emergency case data were used. Plot, organisation names and resource values are invented.',
+           '<strong>Audience testing.</strong> No task-based testing with the target audience, so there is no data on playability, comprehension or willingness to share.'],
+     ps3:['<span class="pill todo">Next steps</span><strong>Planned next:</strong>'],
+     lis3:['Invite a satellite-navigation or emergency-management specialist to review the wording, then revise. Owner: Wu Hao (team lead); within one month after the competition.',
+           'Check every claim against official source text and either clear or rewrite each \u201cto be verified\u201d marker. Owner: Wu Hao (team lead); within one month after the competition.',
+           'Run a small-sample playability, comprehension and sharing-intent test with the target audience. Owner: Wu Hao (team lead); within two months after the competition.'],
+     ps4:['<strong>One principle: every statement here matches what the prototype actually does. Work we have not carried out is listed as future work, never presented as finished.</strong>']},
+    {h:'6 \u00b7 Use of AI, and assets',
+     lis:['<strong>AI assistance.</strong> AI helped draft the code skeleton and an early copy pass; the team reviewed, rewrote and finalised every line.',
+          '<strong>Visual assets.</strong> Everything \u2014 terrain, routes, light and shadow, progress bars, all four scene illustrations \u2014 is drawn in HTML/CSS/SVG. No third-party images, fonts or icons.',
+          '<strong>Audio assets.</strong> Rain and wind are synthesised live with the Web Audio API. <strong>No third-party audio files or sample libraries</strong> were used, and there is no music or voice-over.',
+          '<strong>Still to come.</strong> Refined storyboards, narration recording and a finished audio-visual cut are later work by the team. When added, their sources and licences will be credited.',
+          '<strong>Sources.</strong> Outbound links point only to official BeiDou site sections. No unverified third-party figures appear in the text.']},
+    {h:'7 \u00b7 Boundaries',
+     lis:['Plot, characters, place names, weather, organisation names and events are <strong>entirely fictional</strong> and represent no real event, person or organisation.',
+          'This work is <strong>not guidance for navigation, positioning or emergency response</strong> and must not be used in any real situation. In a real emergency, call your local emergency number.',
+          'Statements about BeiDou rely solely on the official public material above. Anything unconfirmed is marked \u201cto be verified\u201d and <strong>should not be cited until checked line by line</strong>.']},
+    {h:'8 \u00b7 Original contributions by the team',
+     ps:['The division of original work is listed below, matching the team allocation sheet item for item.'],
+     lis:['<strong>Lead creator, Wu Hao (team lead):</strong> overall design, the four-act branch structure and the resource model (battery / time / verification clues), the rules for the fact\u2013fiction boundary, and final sign-off.',
+          '<strong>Technical implementation, Xu Zhi:</strong> the four-act state machine and option-locking logic, the five endings and their attribution list, the SVG scene illustrations (fixed three-layer composition), and the real-time rain and wind synthesis in Web Audio.',
+          '<strong>Content and design, Su Zhang Baiqi:</strong> the four-act script and branch text, the seven BeiDou fact cards with source labels, the full bilingual copy, and the production notes and fact-check table.',
+          '<strong>Originality.</strong> All code, script, copy and visuals were made by the team; no third-party images, fonts, icons or audio were used. AI assisted only with the code skeleton and first-draft copy; review and rewriting were done line by line by the team \u2014 how the rules are set, where the line is drawn and what may not be claimed are human decisions, and they are what makes the piece work.']},
+    {h:'9 \u00b7 Production notes (original work by the team)',
+     ps:['Kept here to show the original decisions behind the piece: why the subject, how it is structured, and where we drew the line between fact and invention.'],
+     lis:['<strong>Origin.</strong> We wanted a Chinese innovation story that says \u201cadvanced technology is not the same thing as safety\u201d rather than reciting achievements. BeiDou short messaging carries built-in tension \u2014 how to get information out when terrestrial networks fail \u2014 so we placed it inside an invented mountain storm and let audiences decide under incomplete information, feeling the gap between information existing and information being enough.',
+          '<strong>Structure: setup, rise, turn, resolution.</strong> Act 1 sets up the warning and asks what to confirm first. Act 2 raises the stakes with a washout, where having checked (or not) directly changes the available options. Act 3 turns on whether any comms agreement was made back in Act 1, once the network dies. Act 4 resolves on whether an acknowledgement arrives. Each act is built around confirming one thing twice, so choices carry forward.',
+          '<strong>Characters.</strong> Zhou Hang, the captain, makes the calls. Ye An handles the terminal and the rhythm of contact. Lin Zhou has stamina but little field experience, standing in for the pull of acting on instinct. Xu Chi must deliver medicine before dark, supplying time pressure. The liaison at the village office never appears on the page: they represent the side that sees the whole picture but needs usable input from you \u2014 a way of writing information handover into relationships rather than narration.',
+          '<strong>Pacing and framing.</strong> Every act runs on three beats: situation text (three paragraphs at most), options with visible costs, immediate feedback. Illustrations use a fixed three-layer composition \u2014 far ridges, mid-ground terrain, foreground figures \u2014 with warm amber marking human positions and cool blue marking the facts section. The most expensive options are deliberately placed in Act 3, forcing viewers to weigh sending one message against saving battery; that is the tension peak of the piece.',
+          '<strong>Rules for the fact/fiction boundary.</strong> Separate them physically \u2014 different border colours and separate data arrays that never reference each other. Source everything \u2014 each fact carries its official link, and anything unconfirmed is marked pending. Make no promises \u2014 no unverified accuracy figures, no writing \u201cmessage sent\u201d as \u201crescue completed\u201d, and no treating arrival as the single correct ending.',
+          '<strong>Still outstanding.</strong> A finished cut with narration and produced audio remains later work by the team. This round is a visual prototype: pictures and sound are generated at runtime and serve as the shot list and timeline for whatever is made next.']},
+    {h:'10 \u00b7 Distribution fit',
+     lis:['<strong>Audience.</strong> Young viewers, particularly university students and young science-communication readers. They expect short, responsive interactive work, so satellite capability is moved out of specification tables and into situated decisions \u2014 with an English version in place for international audiences.',
+          '<strong>Channels and formats:</strong>',
+          '(1) <strong>Campus accounts and student societies:</strong> the interactive page is the primary format. One static HTML file hosts anywhere or travels as an attachment \u2014 nothing to install, no connection needed. Posts invite readers to compare the choices they made.',
+          '(2) <strong>Society events and classes:</strong> a read-aloud script (four acts plus the causal chain) run against a projector, pausing each act for a show of hands before continuing. The exported JSON serves as debrief material.',
+          '(3) <strong>International distribution:</strong> switching to EN makes the whole piece usable in English, including fact cards and the boundaries statement, for audiences overseas. The same pending-verification markers apply; language does not loosen any claim.',
+          '(4) <strong>Fact cards as images:</strong> the seven cards can be lifted as standalone graphics for social posts, each keeping its source line and pending marker.',
+          '<strong>Principle:</strong> one body of content reused across formats, not several versions to maintain \u2014 every format shares the same script data and the same source-check table.']},
+    {h:'11 \u00b7 Versions and changelog',
+     lis:['<span class="ver">v1</span> Prototype: established the fact/fiction split; four-act branching, the three-resource model, five endings with causal chains, seven fact cards and decision playback. <em>Date: 2026-10-18.</em>',
+          '<span class="ver">v2</span> Honest-audit revision: rewrote self-audit claims into three sections \u2014 Done / Not yet carried out / Next \u2014 so nothing unfinished is presented as complete. <em>Date: 2026-10-18.</em>',
+          '<span class="ver">v3</span> Audiovisual and bilingual release: four code-drawn scene illustrations, live-synthesised ambience (off by default), a full Chinese/English switch, production notes, a source-check table, distribution notes and this changelog; the export now records interface language. <em>Date: 2026-10-18.</em>',
+          '<span class="ver">v4</span> Submission release: added a dedicated "8 \u00b7 Team original contribution" section (former 8\u201311 renumbered as 9\u201311) covering who did what across lead, engineering and content; this changelog now follows the public repository (github.com/junming49/blue-boundary-coral-reef). <em>Date: 2026-10-22.</em>']}
+  ]
+}
+};
+
+/* ==========================================================
+   2 · 事实卡：结构数据（文案全部来自字典，
+       status: primary=主干表述已比对 / pending=未引用）
+   ========================================================== */
+const FACTS = [
+ {id:'position', code:'F01', status:'primary', src:['intro']},
+ {id:'sms',      code:'F02', status:'primary', src:['intro','portal']},
+ {id:'timing',   code:'F03', status:'primary', src:['intro']},
+ {id:'global',   code:'F04', status:'pending', src:['intro','portal']},
+ {id:'service',  code:'F05', status:'pending', src:['intro']},
+ {id:'civil',    code:'F06', status:'primary', src:['intro']},
+ {id:'boundary', code:'F07', status:'pending', src:['intro']}
+];
+
+/* ==========================================================
+   3 · 四幕剧本：只保留结构与数值，文案由字典按语言提供
+   ========================================================== */
+const SCENES = [
+{ id:1, acts:'01 / EARLY WARNING',
+  facts:['position','boundary'],
+  paras(){ return ['a','b','c']; },
+  choices(){
+    return [
+      {id:'plan', cost:{time:-2,power:-5,clue:1}, tags:['plan']},
+      {id:'rush', cost:{time:-1,power:-12,clue:0}, tags:['rush']},
+      {id:'road', cost:{time:-3,power:-6,clue:2}, tags:['roadInfo']}
+    ];
+  }
+},
+{ id:2, acts:'02 / FIELD CHECK',
+  facts:['position','boundary'],
+  paras(s){
+    const p=['a'];
+    if(s.flags.rush) p.push('r');
+    if(s.flags.plan) p.push('p');
+    if(s.flags.roadInfo) p.push('rd'); else p.push('ni');
+    return p;
+  },
+  choices(s){
+    const list=[];
+    if(s.flags.roadInfo){
+      list.push({id:'avoid', cost:{time:-3,power:-10,clue:2}, reqPower:20, tags:['roadInfo']});
+    }else{
+      list.push({id:'back',  cost:{time:-4,power:-4,clue:1}, reqTime:4, reqFailK:'back', tags:[]});
+    }
+    list.push({id:'mark', cost:{time:-2,power:-8,clue:1}, reqPower:10, tags:['marked']});
+    list.push({id:'wade', cost:{time:-1,power:-12,clue:0}, tags:['risk']});
+    return list;
+  }
+},
+{ id:3, acts:'03 / LINK DEGRADED',
+  facts:['sms','boundary'],
+  paras(s){
+    const p=['a'];
+    if(s.flags.plan) p.push('p');
+    if(s.flags.rush) p.push('r');
+    if(s.flags.risk) p.push('k');
+    return p;
+  },
+  choices(){
+    return [
+      {id:'sms',    cost:{time:-2,power:-14,clue:2}, reqPower:25, reqFailK:'sms', tags:['sms']},
+      {id:'listen', cost:{time:-3,power:-4,clue:2},  reqFlag:'plan', reqFailK:'listen', tags:['listen']},
+      {id:'hill',   cost:{time:-3,power:-20,clue:0}, tags:['waste']}
+    ];
+  }
+},
+{ id:4, acts:'04 / JOINT DECISION',
+  facts:['civil','boundary'],
+  paras(s){
+    const p=[];
+    p.push(s.flags.sms ? 'y' : 'n');
+    if(s.flags.marked) p.push('m');
+    if(s.res.power<25) p.push('l');
+    return p;
+  },
+  choices(s){
+    const list=[];
+    list.push({id:'hold', cost:{time:-2,power:-4,clue:1}, reqPower:8, reqFailK:'hold', tags:['hold']});
+    list.push({id:'push', cost:{time:-3,power:-18,clue:0}, reqPower:18, reqTime:3, reqFailK:'push', tags:['risk']});
+    if(s.flags.marked){
+      list.push({id:'handover', cost:{time:-2,power:-3,clue:2}, tags:['handover']});
+    }else{
+      list.push({id:'relay', cost:{time:-1,power:-22,clue:2}, reqPower:30, reqFailK:'relay', tags:['relay']});
+    }
+    return list;
+  }
+}
+];
+
+/* ==========================================================
+   4 · 运行时状态与语言
+   ========================================================== */
+const INIT = {power:100, time:12, clue:0};
+let LANG='zh', state, pbIndex=-1, pbTimer=null, lastFocus=null;
+const $=id=>document.getElementById(id);
+const L=()=>T[LANG];                       // 当前语言字典
+const SC=id=>L().scene[id];                // 当前语言的某一幕
+/* 占位符填充：fmt('第 {n} 幕',{n:2}) */
+function fmt(s,o){ return String(s).replace(/\{(\w+)\}/g,(m,k)=> (o && k in o) ? o[k] : m); }
+
+function freshState(){
+  return {stage:0, res:Object.assign({},INIT), flags:{}, records:[], factLog:[], ending:null};
+}
+
+/* ==========================================================
+   5 · 结局判定：资源余量 + 线索完整度 + 冒进计数
+   ========================================================== */
+function judge(s){
+  const risk = s.flags.risk || 0;
+  if(s.res.power < 10 || s.res.time <= 0) return 'E3';
+  if(s.res.clue >= 6 && s.res.power >= 20 && risk === 0) return 'E1';
+  if(risk >= 2) return 'E5';
+  if(s.res.clue >= 4) return 'E2';
+  return 'E4';
+}
+function buildEnding(){
+  const code = judge(state), meta = L().endings[code], W = L().why, why = [];
+  state.records.forEach(r=>{
+    (r.tags||[]).forEach(t=>{
+      if(!W[t]) return;
+      const line = W.tpl({a:r.act, c:r.choice, w:W[t]});
+      if(why.indexOf(line)<0) why.push(line);
+    });
+  });
+  if(code==='E3'){
+    if(state.res.power < 10) why.push(W.power({p:state.res.power}));
+    if(state.res.time <= 0) why.push(W.time);
+  }
+  if(code==='E1') why.push(W.end1({p:state.res.power, c:state.res.clue}));
+  if(code==='E2') why.push(W.end2({c:state.res.clue}));
+  if(code==='E4') why.push(W.end4({c:state.res.clue}));
+  if(code==='E5') why.push(W.end5({r:state.flags.risk||0}));
+  return {code:code, title:meta.title, text:meta.text, why:why};
+}
+
+/* ==========================================================
+   6 · 资源与选项可用性
+   ========================================================== */
+function fmtCost(cost){
+  const U=L().ui.units, N=L().ui.sfx;
+  const parts=Object.keys(cost).filter(k=>cost[k]!==0)
+    .map(k=>U[k]+' '+(cost[k]>0?'+':'')+cost[k]+N[k]);
+  return parts.length?parts.join(' · '):L().ui.noCost;
+}
+function deltaStr(k,v){ return (v>0?'+':'')+v+L().ui.sfx[k]; }
+/* 锁定原因：动态类由模板生成，前置标志类由字典 rf 提供 */
+function lockReason(c){
+  const r=state.res;
+  if(c.reqPower && r.power < c.reqPower) return fmtLock('power',{n:c.reqPower, cur:r.power});
+  if(c.reqTime  && r.time  < c.reqTime)  return fmtLock('time', {n:c.reqTime,  cur:r.time});
+  if(c.reqFlag  && !state.flags[c.reqFlag])
+    return L().rf[c.reqFailK] || (LANG==='zh' ? '前置条件未满足' : 'Prerequisite not met');
+  return '';
+}
+function fmtLock(kind,o){
+  if(LANG==='zh') return kind==='power'
+    ? '电量不足：需要 '+o.n+'%，当前 '+o.cur+'%'
+    : '处置窗口不足：需要 '+o.n+' 刻，当前 '+o.cur+' 刻';
+  return kind==='power'
+    ? 'Not enough power: '+o.n+'% needed, '+o.cur+'% left'
+    : 'Not enough time: '+o.n+' slots needed, '+o.cur+' left';
+}
+function applyCost(c){
+  const before=Object.assign({},state.res);
+  const cost=c.cost||{};
+  state.res.power = Math.max(0, Math.min(100, before.power + (cost.power||0)));
+  state.res.time  = Math.max(0, before.time + (cost.time||0));
+  state.res.clue  = Math.max(0, before.clue + (cost.clue||0));
+  return before;
+}
+
+/* ==========================================================
+   7 · 场景插画：四幅 SVG 全部由代码按图层绘制
+   ========================================================== */
+/* 雨丝：给定数量生成一组斜线 */
+function rainLines(n,opacity,len,w,h){
+  let s='';
+  for(let i=0;i<n;i++){
+    const x=(i*37.31)%w, y=(i*53.17)%h;
+    s+='<line x1="'+x.toFixed(1)+'" y1="'+y.toFixed(1)+'" x2="'+(x-4).toFixed(1)+
+       '" y2="'+(y+len).toFixed(1)+'" stroke="#cfe3ee" stroke-opacity="'+opacity+'" stroke-width="1"/>';
+  }
+  return s;
+}
+const ILLUSTRATIONS=[
+  /* Act 1 · 雨夜山地 */
+  function(){
+    return '<svg viewBox="0 0 480 200" role="img" aria-label="'+L().ui.illusAlt+'">'+
+      '<defs><linearGradient id="sky1" x1="0" y1="0" x2="0" y2="1">'+
+        '<stop offset="0" stop-color="#1b2a38"/><stop offset=".55" stop-color="#2c3a44"/>'+
+        '<stop offset="1" stop-color="#3b3a2f"/></linearGradient>'+
+      '<linearGradient id="far1" x1="0" y1="0" x2="0" y2="1">'+
+        '<stop offset="0" stop-color="#2f4250"/><stop offset="1" stop-color="#243440"/></linearGradient></defs>'+
+      '<rect width="480" height="200" fill="url(#sky1)"/>'+
+      '<circle cx="392" cy="46" r="26" fill="#f2c76e" fill-opacity=".10" class="pulse"/>'+
+      '<g class="mist"><path d="M0 96 L74 74 L126 92 L182 66 L240 90 L300 62 L360 88 L424 70 L480 92 L480 200 L0 200Z" '+
+        'fill="url(#far1)" fill-opacity=".85"/></g>'+
+      '<path d="M0 128 L58 104 L112 124 L166 96 L228 120 L286 100 L348 122 L412 104 L480 126 L480 200 L0 200Z" fill="#22323d"/>'+
+      '<path d="M0 162 L64 140 L128 158 L196 134 L262 156 L330 138 L400 160 L480 144 L480 200 L0 200Z" fill="#16232c"/>'+
+      '<g class="rain">'+rainLines(38,.22,16,480,200)+'</g>'+
+      '<g class="rain slow">'+rainLines(22,.14,20,480,200)+'</g>'+
+      '<g transform="translate(96,168)"><rect x="-16" y="-24" width="32" height="24" rx="2" fill="#0e161d"/>'+
+        '<path d="M-20 -24 L0 -38 L20 -24Z" fill="#3a2f22"/>'+
+        '<rect x="-5" y="-17" width="10" height="11" fill="#f2c76e" fill-opacity=".55" class="pulse"/></g>'+
+      '</svg>';
+  },
+  /* Act 2 · 进山路口 */
+  function(){
+    return '<svg viewBox="0 0 480 200" role="img" aria-label="'+L().ui.illusAlt+'">'+
+      '<defs><linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1">'+
+        '<stop offset="0" stop-color="#243440"/><stop offset="1" stop-color="#4a4436"/></linearGradient>'+
+      '<linearGradient id="gap2" x1="0" y1="0" x2="0" y2="1">'+
+        '<stop offset="0" stop-color="#6d6350"/><stop offset="1" stop-color="#3a3730"/></linearGradient></defs>'+
+      '<rect width="480" height="200" fill="url(#sky2)"/>'+
+      '<path d="M0 70 L70 44 L128 72 L192 40 L256 68 L322 42 L386 70 L480 48 L480 200 L0 200Z" fill="#243440"/>'+
+      '<path d="M0 104 L60 84 L122 106 L186 82 L250 104 L316 86 L382 106 L480 88 L480 200 L0 200Z" fill="#1b2a33"/>'+
+      '<path d="M0 150 L0 200 L480 200 L480 150Z" fill="url(#gap2)"/>'+
+      '<path d="M150 150 L214 150 L206 200 L142 200Z" fill="#e8d9a8" fill-opacity=".14"/>'+
+      '<path d="M210 152 L300 152 L322 200 L238 200Z" fill="#5c5a44"/>'+
+      '<path d="M214 152 C238 168 268 176 300 178 L300 200 L214 200Z" fill="#7d6a48"/>'+
+      '<path d="M150 152 C176 166 200 174 232 176 L232 200 L150 200Z" fill="#8f7a52"/>'+
+      '<path d="M150 152 L300 152 L322 200 L238 200Z" fill="none" stroke="#0f171d" stroke-width="2"/>'+
+      '<path d="M150 160 C186 172 236 176 306 172" fill="none" stroke="#cfe3ee" stroke-opacity=".3" stroke-width="2"/>'+
+      '<g class="rain">'+rainLines(26,.20,15,480,200)+'</g>'+
+      '<g transform="translate(96,150)"><circle cx="0" cy="-6" r="5" fill="#f2c76e"/>'+
+        '<path d="M0 -1 L-8 18 L8 18Z" fill="#f2c76e" fill-opacity=".35"/>'+
+        '<path d="M0 -1 L-14 26 L14 26Z" fill="#f2c76e" fill-opacity=".18"/></g>'+
+      '<g class="mist"><ellipse cx="300" cy="120" rx="110" ry="16" fill="#cfe3ee" fill-opacity=".08"/></g>'+
+      '</svg>';
+  },
+  /* Act 3 · 失联山脊 */
+  function(){
+    return '<svg viewBox="0 0 480 200" role="img" aria-label="'+L().ui.illusAlt+'">'+
+      '<defs><linearGradient id="sky3" x1="0" y1="0" x2="0" y2="1">'+
+        '<stop offset="0" stop-color="#141f2a"/><stop offset="1" stop-color="#33323a"/></linearGradient></defs>'+
+      '<rect width="480" height="200" fill="url(#sky3)"/>'+
+      '<circle cx="86" cy="44" r="3" fill="#9ad3ef" fill-opacity=".7"/>'+
+      '<circle cx="150" cy="30" r="2" fill="#cfe3ee" fill-opacity=".5"/>'+
+      '<circle cx="238" cy="52" r="2" fill="#cfe3ee" fill-opacity=".4"/>'+
+      '<g class="pulse"><path d="M330 150 C330 96 372 60 418 40" fill="none" stroke="#9ad3ef" '+
+        'stroke-opacity=".55" stroke-width="1.6" stroke-dasharray="5 7"/></g>'+
+      '<g class="pulse" style="animation-delay:.9s"><path d="M330 150 C330 104 300 74 262 56" fill="none" '+
+        'stroke="#9ad3ef" stroke-opacity=".30" stroke-width="1.4" stroke-dasharray="4 8"/></g>'+
+      '<path d="M0 108 L58 88 L112 108 L172 82 L236 106 L296 86 L356 108 L424 90 L480 110 L480 200 L0 200Z" fill="#1d2c37"/>'+
+      '<path d="M0 146 L64 126 L128 148 L196 122 L262 146 L330 126 L400 148 L480 130 L480 200 L0 200Z" fill="#15222b"/>'+
+      '<path d="M210 200 L246 132 L272 158 L318 126 L340 200Z" fill="#0f1922"/>'+
+      '<g transform="translate(196,178)"><circle cx="0" cy="-9" r="4.6" fill="#f2c76e"/>'+
+        '<path d="M0 -4 L-7 14 L7 14Z" fill="#f2c76e" fill-opacity=".6"/></g>'+
+      '<g transform="translate(286,180)"><circle cx="0" cy="-9" r="4.6" fill="#ef8e73"/>'+
+        '<path d="M0 -4 L-7 14 L7 14Z" fill="#ef8e73" fill-opacity=".6"/></g>'+
+      '<g class="rain">'+rainLines(44,.24,18,480,200)+'</g>'+
+      '<g class="mist"><ellipse cx="240" cy="160" rx="180" ry="20" fill="#cfe3ee" fill-opacity=".07"/></g>'+
+      '</svg>';
+  },
+  /* Act 4 · 协同救援 */
+  function(){
+    return '<svg viewBox="0 0 480 200" role="img" aria-label="'+L().ui.illusAlt+'">'+
+      '<defs><linearGradient id="sky4" x1="0" y1="0" x2="0" y2="1">'+
+        '<stop offset="0" stop-color="#1a2632"/><stop offset=".6" stop-color="#2b3a3c"/>'+
+        '<stop offset="1" stop-color="#4b4030"/></linearGradient></defs>'+
+      '<rect width="480" height="200" fill="url(#sky4)"/>'+
+      '<path d="M0 78 L64 52 L124 78 L188 50 L252 76 L318 52 L384 78 L480 56 L480 200 L0 200Z" fill="#1f2f39"/>'+
+      '<path d="M0 118 L62 98 L126 120 L192 96 L258 118 L324 100 L390 120 L480 102 L480 200 L0 200Z" fill="#172531"/>'+
+      '<path d="M0 160 L0 200 L480 200 L480 160Z" fill="#101c25"/>'+
+      '<path d="M120 168 L188 168 L200 200 L112 200Z" fill="#f2c76e" fill-opacity=".10"/>'+
+      '<g transform="translate(148,168)"><rect x="-11" y="-20" width="22" height="20" rx="2" fill="#0e161d"/>'+
+        '<path d="M-15 -20 L0 -31 L15 -20Z" fill="#3c3123"/>'+
+        '<rect x="-4" y="-14" width="8" height="9" fill="#f2c76e" fill-opacity=".8" class="pulse"/></g>'+
+      '<g transform="translate(206,172)" class="scan"><circle cx="0" cy="-8" r="4.4" fill="#f2c76e"/>'+
+        '<path d="M0 -3 L-7 15 L7 15Z" fill="#f2c76e" fill-opacity=".55"/></g>'+
+      '<g transform="translate(268,172)"><circle cx="0" cy="-8" r="4.4" fill="#f2c76e"/>'+
+        '<path d="M0 -3 L-7 15 L7 15Z" fill="#f2c76e" fill-opacity=".55"/></g>'+
+      '<g transform="translate(316,170)"><circle cx="0" cy="-7" r="4" fill="#8fd6a8"/>'+
+        '<path d="M0 -2 L-6 14 L6 14Z" fill="#8fd6a8" fill-opacity=".45"/></g>'+
+      '<g class="pulse"><path d="M356 154 C356 108 396 74 440 54" fill="none" stroke="#8fd6a8" '+
+        'stroke-opacity=".5" stroke-width="1.6" stroke-dasharray="6 6"/></g>'+
+      '<g class="rain slow">'+rainLines(14,.10,14,480,200)+'</g>'+
+      '<g class="mist"><ellipse cx="240" cy="150" rx="200" ry="18" fill="#8fd6a8" fill-opacity=".05"/></g>'+
+      '</svg>';
+  }
+];
+function renderIllus(){
+  const idx = Math.min(state.stage, ILLUSTRATIONS.length-1);
+  $('illus').innerHTML = ILLUSTRATIONS[idx]();
+  $('cap').textContent = L().ui.illusCap[idx];
+}
+
+/* ==========================================================
+   8 · 环境音：Web Audio 实时合成（雨 = 高通+带通白噪声，风 = 低通+慢 LFO）
+       —— 无第三方音频素材；默认关闭，必须用户点击才创建 AudioContext
+   ========================================================== */
+const AMB = {ctx:null, master:null, on:false};
+function noiseBuffer(ctx){
+  // 生成 2 秒白噪声循环缓冲，作为雨声与风声的共同素材
+  const len = ctx.sampleRate * 2;
+  const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+  const d = buf.getChannelData(0);
+  for(let i=0;i<len;i++) d[i] = Math.random()*2 - 1;
+  return buf;
+}
+function buildAmbience(){
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if(!AC) return false;
+  const ctx = new AC();
+  const master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
+
+  const src = ctx.createBufferSource();
+  src.buffer = noiseBuffer(ctx); src.loop = true;
+
+  // 雨：高通去掉轰鸣，带通塑形雨粒质感
+  const hp = ctx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=700;
+  const bp = ctx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=1900; bp.Q.value=0.7;
+  const rainG = ctx.createGain(); rainG.gain.value=0.55;
+  src.connect(hp); hp.connect(bp); bp.connect(rainG); rainG.connect(master);
+
+  // 风：低通 + 极慢 LFO 调制增益，形成起伏
+  const lp = ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=380; lp.Q.value=0.9;
+  const windG = ctx.createGain(); windG.gain.value=0.22;
+  const lfo = ctx.createOscillator(); lfo.type='sine'; lfo.frequency.value=0.07;
+  const lfoG = ctx.createGain(); lfoG.gain.value=0.16;
+  lfo.connect(lfoG); lfoG.connect(windG.gain);
+  src.connect(lp); lp.connect(windG); windG.connect(master);
+
+  src.start(); lfo.start();
+  AMB.ctx = ctx; AMB.master = master; AMB.rainG = rainG;
+  return true;
+}
+/* 不同幕次微调雨/风配比，让听觉随叙事推进 */
+function moodForStage(stage){
+  if(!AMB.ctx || !AMB.rainG) return;
+  const t = AMB.ctx.currentTime;
+  const rainLevel = [0.42,0.55,0.70,0.34][Math.min(stage,3)];
+  AMB.rainG.gain.linearRampToValueAtTime(rainLevel, t+1.2);
+}
+function toggleSound(){
+  if(!AMB.ctx && !buildAmbience()){ $('status').textContent = L().ui.audioFail; return; }
+  if(AMB.ctx.state === 'suspended') AMB.ctx.resume();
+  AMB.on = !AMB.on;
+  const t = AMB.ctx.currentTime;
+  AMB.master.gain.cancelScheduledValues(t);
+  AMB.master.gain.linearRampToValueAtTime(AMB.on ? 0.16 : 0, t+0.8);
+  $('soundBtn').setAttribute('aria-pressed', AMB.on ? 'true':'false');
+  $('soundBtn').textContent = AMB.on ? L().ui.soundOn : L().ui.soundOff;
+  $('status').textContent = AMB.on ? L().ui.audioInit : L().ui.audioEnd;
+  if(AMB.on) moodForStage(state.stage);
+}
+
+/* ==========================================================
+   9 · 渲染
+   ========================================================== */
+function renderResources(){
+  const r=state.res;
+  $('vPower').textContent=r.power+'%'; $('bPower').style.width=r.power+'%';
+  $('bPower').parentNode.setAttribute('aria-valuenow',r.power);
+  $('vTime').textContent=r.time+(LANG==='zh'?' 刻':' slots'); $('bTime').style.width=(r.time/12*100)+'%';
+  $('bTime').parentNode.setAttribute('aria-valuenow',r.time);
+  $('vClue').textContent=r.clue+(LANG==='zh'?' 条':' notes'); $('bClue').style.width=Math.min(100,r.clue/8*100)+'%';
+  $('bClue').parentNode.setAttribute('aria-valuenow',r.clue);
+  const dots=$('acts').children;
+  for(let i=0;i<dots.length;i++) dots[i].className = (i<=Math.min(state.stage,3)) ? 'on' : '';
+  $('line').style.width=(Math.min(88,18+state.res.clue*9))+'%';
+  $('lab2').textContent = state.res.power<30 ? L().ui.lab2alt : L().ui.lab2;
+}
+
+function renderFacts(){
+  $('factGrid').innerHTML = FACTS.map(f=>{
+    const FT=L().facts[f.id];
+    return '<button class="factbtn" data-f="'+f.id+'" aria-pressed="'+(state.lastFact===f.id)+'">'+
+      f.code+' '+FT.name+'<small>'+FT.listen+'</small></button>';
+  }).join('');
+  $('factGrid').querySelectorAll('.factbtn').forEach(b=>b.onclick=()=>openFact(b.dataset.f));
+}
+
+/* silent=true 时只刷新视图、不写入查看记录（语言切换用） */
+function openFact(id, silent){
+  const f=FACTS.find(x=>x.id===id); if(!f) return;
+  const U=L().ui, FT=L().facts[id];
+  state.lastFact=id; if(!silent) logFact(id,'expand');
+  const links=f.src.map(k=>'<a target="_blank" rel="noopener" href="'+SRC[k].url+'">'+L().src[k]+(LANG==='zh'?' ↗':' ↗')+'</a>').join('<br>');
+  $('factView').innerHTML='<h4>'+f.code+' · '+FT.name+'</h4><p>'+FT.body+'</p>'+
+    '<p class="caution">'+FT.caution+'</p>'+
+    '<p style="margin:0;font-size:12px">'+U.srcLabel+'<br>'+links+'</p>'+
+    (FT.pending&&FT.pending.length?'<div class="pending">'+U.pendingLabel+FT.pending.join('；')+'</div>':'');
+  $('factView').querySelectorAll('a').forEach(a=>a.onclick=()=>logFact(id,'link'));
+  renderFacts();
+}
+function logFact(id,how){
+  state.factLog.push({fact:id, action:how, at:new Date().toISOString(), act:state.stage+1});
+}
+
+/* 事实核对表：表述要点 / 官方来源 / 核对状态 / 备注 */
+function renderVeri(){
+  const U=L().ui;
+  $('veriBody').innerHTML = FACTS.map(f=>{
+    const FT=L().facts[f.id];
+    const links=f.src.map(k=>'<a target="_blank" rel="noopener" href="'+SRC[k].url+'">'+L().src[k]+'</a>').join('<br>');
+    return '<div class="ckrow"><div class="cktop"><b>'+f.code+'</b>'+
+      '<span class="pill '+(f.status==='primary'?'ok':'todo')+'">'+U['st_'+f.status]+'</span></div><dl>'+
+      '<dt>'+U.ckPoint+'</dt><dd>'+FT.point+'</dd>'+
+      '<dt>'+U.ckSrc+'</dt><dd>'+links+'</dd>'+
+      '<dt>'+U.ckNote+'</dt><dd>'+FT.pending.join('；')+'</dd>'+
+      '</dl></div>';
+  }).join('');
+}
+
+function renderStory(){
+  const done = state.stage>=SCENES.length, U=L().ui, box=$('choices');
+  renderIllus();
+  if(done){
+    const e=state.ending;
+    $('stepmeta').textContent=U.endingHead;
+    $('situation').textContent=U.endingSit;
+    $('title').textContent=e.title;
+    $('text').innerHTML='<p>'+e.text+'</p>';
+    $('acts').children[3].className='on';
+    $('line').style.width='88%';
+    box.innerHTML='<div class="ending"><h3>'+U.endingWhy+'</h3><ul class="why">'+
+      e.why.map(w=>'<li>'+w+'</li>').join('')+'</ul>'+
+      '<p style="margin:10px 0 0;font-size:12.5px;color:#b3bfc3">'+U.endingFoot+'</p></div>';
+    return;
+  }
+  const s=SCENES[state.stage], S=SC(s.id);
+  $('stepmeta').textContent=U.stepMeta({n:state.stage+1, acts:s.acts});
+  $('situation').textContent=S.situation;
+  $('title').textContent=S.title;
+  $('text').innerHTML=s.paras(state).map(k=>'<p>'+S.paras[k]+'</p>').join('');
+  const list=s.choices(state);
+  box.innerHTML=list.map((c,i)=>{
+    const reason=lockReason(c), CT=S.choice[c.id];
+    return '<button class="choice'+(reason?' locked':'')+'" data-i="'+i+'"'+
+      (reason?' aria-disabled="true"':'')+'>'+
+      '<span class="ct">'+CT.text+'</span>'+
+      '<span class="cres">'+U.cost+fmtCost(c.cost)+'</span>'+
+      '<span class="cres">'+(reason?U.locked+reason:'')+'</span>'+
+      '<span class="cmeta">'+CT.note+(CT.impact?' ｜ '+U.effect+CT.impact:'')+'</span>'+
+      '</button>';
+  }).join('') + (s.facts||[]).map(fid=>
+      '<button class="plink" data-openfact="'+fid+'">↳ '+(LANG==='zh'?'本幕相关知识卡：':'Related fact card: ')+
+      L().facts[fid].name+'</button>').join('');
+  box.querySelectorAll('.choice[data-i]').forEach(b=>b.onclick=()=>choose(+b.dataset.i));
+  box.querySelectorAll('[data-openfact]').forEach(b=>b.onclick=e=>{e.stopPropagation();openFact(b.dataset.openfact);});
+}
+
+function choose(i){
+  if(state.stage>=SCENES.length) return;
+  const s=SCENES[state.stage], c=s.choices(state)[i];
+  const reason=lockReason(c);
+  if(reason){ $('status').textContent=L().ui.lockedToast({r:reason}); return; }
+  const before=applyCost(c);
+  (c.tags||[]).forEach(t=>{ if(t==='risk') state.flags.risk=(state.flags.risk||0)+1; else state.flags[t]=1; });
+  state.records.push({
+    act:s.id, actName:SC(s.id).title, choiceId:c.id, choice:SC(s.id).choice[c.id].text,
+    delta:{power:state.res.power-before.power, time:state.res.time-before.time, clue:state.res.clue-before.clue},
+    before:before, after:Object.assign({},state.res),
+    tags:c.tags||[], impact:SC(s.id).choice[c.id].impact
+  });
+  state.stage++;
+  if(state.stage>=SCENES.length) state.ending=buildEnding();
+  $('status').textContent=SC(s.id).choice[c.id].note || L().ui.chosenNote;
+  renderAll(); renderReplay();
+  if(AMB.on) moodForStage(state.stage);
+}
+
+function renderReplay(){
+  const list=$('replayList'), U=L().ui;
+  if(!state.records.length){ list.innerHTML='<li class="empty">'+U.playEmpty+'</li>'; return; }
+  list.innerHTML=state.records.map((r,i)=>{
+    const d=r.delta;
+    const ds=['power','time','clue'].filter(k=>d[k]!==0).map(k=>deltaStr(k,d[k])).join(' / ')||'—';
+    const tail = LANG==='zh'
+      ? ' ｜ 余量 电量 '+r.after.power+'% / 时间 '+r.after.time+' 刻 / 线索 '+r.after.clue+' 条'
+      : ' ｜ left: power '+r.after.power+'% / time '+r.after.time+' slots / clues '+r.after.clue;
+    return '<li data-ri="'+i+'" class="shown">'+
+      '<span class="rnum">'+(LANG==='zh'?'第 '+r.act+' 幕 · ':'Act '+r.act+' · ')+r.actName+'</span><br>'+
+      (LANG==='zh'?'选择了：':'Chose: ')+r.choice+'<br>'+
+      '<span class="rdelta">'+(LANG==='zh'?'资源变化 ':'Δ ')+ds+tail+'</span>'+
+      '<span class="rimp">'+(LANG==='zh'?'影响：':'Effect: ')+(r.impact||'—')+'</span></li>';
+  }).join('')+(state.ending?'<li data-ri="'+state.records.length+'" class="shown">'+
+      '<span class="rnum">'+(LANG==='zh'?'终局 · ':'Ending · ')+state.ending.code+'</span><br>'+state.ending.title+
+      '<span class="rimp">'+state.ending.why.join('；')+'</span></li>':'');
+  applyPb();
+}
+function applyPb(){
+  const items=$('replayList').querySelectorAll('li[data-ri]');
+  items.forEach((el,i)=>{ el.className = (pbIndex>=i && pbIndex>=0) ? 'on' : (pbIndex===-2?'shown':''); });
+}
+function pbStop(){ if(pbTimer){ clearInterval(pbTimer); pbTimer=null; } $('pbAuto').textContent=L().ui.pbAuto; }
+function renderAll(){ renderResources(); renderFacts(); renderStory(); }
+
+/* ==========================================================
+   10 · 静态文案与抽屉渲染（随语言整体刷新）
+   ========================================================== */
+function renderStatic(){
+  const U=L().ui, M=L().meta;
+  document.documentElement.lang = L().htmlLang;
+  document.title = L().docTitle + ' · 作品编号 400430';
+  $('heroK').textContent=M.heroK; $('heroTitle').textContent=M.title; $('lede').textContent=M.lede;
+  $('chips').innerHTML=M.chips.map((c,i)=>'<li'+(i===2?' class="warn"':'')+'>'+c+'</li>').join('');
+  $('openDrawer').textContent=U.openDrawer; $('closeDrawer').textContent=U.closeDrawer;
+  $('drawerTitle').textContent=U.drawerTitle;
+  $('soundBtn').textContent=AMB.on?U.soundOn:U.soundOff;
+  $('soundNote').textContent=U.soundNote;
+  $('badgeFic').textContent=U.badgeFic; $('badgeKnow').textContent=U.badgeKnow;
+  $('storyHeadText').textContent=U.storyHead;
+  $('mapHead').textContent=U.mapHead; $('mapFoot').textContent=U.mapFoot;
+  $('lab1').textContent=U.lab1; $('lab3').textContent=U.lab3;
+  $('resHead').textContent=U.resHead; $('resHint').textContent=U.resHint;
+  $('labPower').textContent=U.labPower; $('labTime').textContent=U.labTime; $('labClue').textContent=U.labClue;
+  $('veriHead').textContent=U.veriHead; $('veriFoot').textContent=U.veriFoot;
+  $('playHead').textContent=U.playHead;
+  $('pbStep').textContent=U.pbStep; $('pbAll').textContent=U.pbAll; $('pbReset').textContent=U.pbReset;
+  if(!pbTimer) $('pbAuto').textContent=U.pbAuto;
+  $('restart').textContent=U.btnRestart; $('export').textContent=U.btnExport;
+  $('factViewHint').textContent=U.factViewHint;
+  if(!state.lastFact) $('factViewTitle').textContent=U.factViewTitle;
+  $('langZh').setAttribute('aria-pressed', LANG==='zh'?'true':'false');
+  $('langEn').setAttribute('aria-pressed', LANG==='en'?'true':'false');
+  $('disclaim').innerHTML = LANG==='zh'
+    ? '本作品为虚构叙事。所有人名、地名、天气过程、机构名称、路况与情节安排均为创作设定，不代表任何真实事件、个人或单位，也<strong>不构成导航、定位或应急救援的行动建议</strong>。真实遇险请拨打当地报警与救援电话。'
+    : 'This work is fiction. All names of people and places, weather, organisation names, road conditions and plot are invented and represent no real event, person or organisation. It is <strong>not navigation, positioning or emergency-rescue guidance</strong>. In a real emergency, call your local emergency number.';
+}
+function renderDrawer(){
+  $('drawerBody').innerHTML = L().drawer.map(sec=>{
+    /* 按 ps / lis / ps2 / lis2 / ps3 / lis3 / ps4 的真实语义顺序交错输出，
+       避免「已完成 / 尚未开展 / 后续计划」三个标题堆在一起、条目与标题错位 */
+    const order = ['ps','lis','ps2','lis2','ps3','lis3','ps4'];
+    const blocks = order.map(k=>{
+      if(!sec[k]) return '';
+      if(k.indexOf('ps') === 0) return sec[k].map(p=>'<p>'+p+'</p>').join('');
+      return '<ul>'+sec[k].map(l=>'<li>'+l+'</li>').join('')+'</ul>';
+    });
+    return '<section><h3>'+sec.h+'</h3>'+blocks.join('')+'</section>';
+  }).join('');
+}
+
+/* ==========================================================
+   11 · 抽屉开关 / 语言切换
+   ========================================================== */
+function openDrawer(){
+  lastFocus=document.activeElement;
+  $('overlay').classList.add('on'); $('drawer').classList.add('on');
+  $('drawer').setAttribute('aria-hidden','false'); $('closeDrawer').focus();
+}
+function closeDrawer(){
+  $('overlay').classList.remove('on'); $('drawer').classList.remove('on');
+  $('drawer').setAttribute('aria-hidden','true');
+  if(lastFocus) lastFocus.focus();
+}
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeDrawer(); });
+
+function setLang(next){
+  if(next===LANG) return;
+  LANG=next;
+  if(state.ending) state.ending=buildEnding();   // 结局文案随语言重算
+  renderStatic(); renderDrawer(); renderVeri(); renderAll(); renderReplay();
+  if(state.lastFact) openFact(state.lastFact, true);   // 事实卡展开内容随语言重绘
+  $('status').textContent=L().ui.langDone({name: LANG==='zh'?'中文':'English'});
+}
+
+/* ==========================================================
+   12 · 导出：beidou-choices.json（含界面语言）
+   ========================================================== */
+function exportJSON(){
+  const payload={
+    work:'北斗·归途：一束信号，走出风暴',
+    workEn:'BeiDou · The Way Back: One Signal Out of the Storm',
+    track:'全国大学生数字媒体科技作品及创意竞赛 · 指定命题类 · 中国科技创新故事数字传播',
+    fictional:true,
+    language:LANG,
+    disclaimers:['故事情节、人物、地名、天气与机构名称均为虚构','不构成导航、定位或应急救援的行动指导'],
+    exportedAt:new Date().toISOString(),
+    completed:state.stage>=SCENES.length,
+    resources:state.res,
+    flags:state.flags,
+    ending:state.ending,
+    choices:state.records.map(r=>({
+      act:r.act, actName:r.actName, choiceId:r.choiceId, choice:r.choice,
+      resourceBefore:r.before, resourceDelta:r.delta, resourceAfter:r.after,
+      tags:r.tags, impact:r.impact
+    })),
+    factViews:state.factLog
+  };
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='beidou-choices.json'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1500);
+  $('status').textContent=L().ui.exportDone;
+}
+
+/* ==========================================================
+   13 · 绑定与初始化
+   ========================================================== */
+$('openDrawer').onclick=openDrawer;
+$('closeDrawer').onclick=closeDrawer;
+$('overlay').onclick=closeDrawer;
+$('soundBtn').onclick=toggleSound;
+$('langZh').onclick=()=>setLang('zh');
+$('langEn').onclick=()=>setLang('en');
+$('restart').onclick=()=>{
+  pbStop(); pbIndex=-1; state=freshState(); renderAll(); renderReplay();
+  $('status').textContent=L().ui.restartDone;
+};
+$('export').onclick=exportJSON;
+$('pbStep').onclick=()=>{ pbStop(); const total=state.records.length+(state.ending?1:0); pbIndex=Math.min(pbIndex+1,total-1); applyPb(); };
+$('pbAuto').onclick=()=>{
+  pbStop();
+  const total=state.records.length+(state.ending?1:0);
+  if(!total) return;
+  if(pbIndex>=total-1) pbIndex=-1;
+  $('pbAuto').textContent=L().ui.pbStop;
+  pbTimer=setInterval(()=>{ pbIndex++; if(pbIndex>=total){ pbStop(); return; } applyPb(); },1100);
+};
+$('pbAll').onclick=()=>{ pbStop(); pbIndex=-2; applyPb(); };
+$('pbReset').onclick=()=>{ pbStop(); pbIndex=-1; applyPb(); };
+
+state=freshState();
+renderStatic(); renderDrawer(); renderVeri(); renderAll(); renderReplay();
+</script>
+</body>
+</html>
